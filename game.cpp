@@ -114,8 +114,22 @@ void Game::SetupResources(void){
     std::string filename = std::string(MATERIAL_DIRECTORY) + std::string("/particle");
     resman_.LoadResource(Material, "ParticleMaterial", filename.c_str());
 
+   filename = std::string(MATERIAL_DIRECTORY) + std::string("/metal");
+    resman_.LoadResource(Material, "Metal", filename.c_str());
+
+    filename = std::string(MATERIAL_DIRECTORY) + std::string("\\Assets/StraightRoad.obj");
+    resman_.LoadResource(Mesh, "Rd1", filename.c_str());
+
+    filename = std::string(MATERIAL_DIRECTORY) + std::string("\\Assets/rocky.png");
+    resman_.LoadResource(Texture, "RockyTexture", filename.c_str());
+
+
+
     // Create particles for explosion
     resman_.CreateSphereParticles("SphereParticles");
+    
+
+    
 }
 
 
@@ -126,6 +140,7 @@ void Game::SetupScene(void){
 
     // Create particles
     game::SceneNode *particles = CreateInstance("ParticleInstance1", "SphereParticles", "ParticleMaterial");
+    game::SceneNode *Road = CreateInstance("Road", "Rd1", "Metal", "RockyTexture");
 }
 
 
@@ -133,6 +148,11 @@ void Game::MainLoop(void){
 
     // Loop while the user did not close the window
     while (!glfwWindowShouldClose(window_)){
+
+        SceneNode* n = scene_.GetNode("Road");
+        if (n != NULL)std::cout << "LOADED AND HERE" << std::endl;
+        else std::cout << "dumb ass, maybe get it to work"<< std::endl;
+        n->SetPosition(glm::vec3(3, 7, 0));
 
         // Draw the scene
         scene_.Draw(&camera_);
