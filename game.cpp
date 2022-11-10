@@ -111,13 +111,13 @@ void Game::InitEventHandlers(void){
 void Game::SetupResources(void){
 
     // Load material to be applied to particles
-    std::string filename = std::string(MATERIAL_DIRECTORY) + std::string("\\Shaders/particle");
+    std::string filename = std::string(MATERIAL_DIRECTORY) + std::string("\\particle");
     resman_.LoadResource(Material, "ParticleMaterial", filename.c_str());
 
-   filename = std::string(MATERIAL_DIRECTORY) + std::string("\\Shaders/noir");
+   filename = std::string(MATERIAL_DIRECTORY) + std::string("\\noir");
     resman_.LoadResource(Material, "Noir", filename.c_str());
 
-    filename = std::string(MATERIAL_DIRECTORY) + std::string("\\Shaders/metal");
+    filename = std::string(MATERIAL_DIRECTORY) + std::string("\\metal");
     resman_.LoadResource(Material, "Metal", filename.c_str());
 
     filename = std::string(MATERIAL_DIRECTORY) + std::string("\\Assets/StraightRoad.obj");
@@ -129,6 +129,9 @@ void Game::SetupResources(void){
     
     filename = std::string(MATERIAL_DIRECTORY) + std::string("\\Assets/Car2.obj");
     resman_.LoadResource(Mesh, "car", filename.c_str());
+
+    filename = std::string(MATERIAL_DIRECTORY) + std::string("\\Assets/Street_Lamp_TS.obj");
+    resman_.LoadResource(Mesh, "streetlamp", filename.c_str());
 
 
     /*filename = std::string(MATERIAL_DIRECTORY) + std::string("\\Assets/PostOffice.obj");
@@ -161,8 +164,11 @@ void Game::SetupScene(void){
 
     // Create particles
     //game::SceneNode *particles = CreateInstance("ParticleInstance1", "SphereParticles", "ParticleMaterial");
-    game::SceneNode *Road = CreateInstance("Road", "car", "Noir", "RockyTexture");
+    game::SceneNode *Road = CreateInstance("Car1", "car", "Noir", "RockyTexture");
     Road->SetScale(glm::vec3(0.2, 0.2, 0.2));
+
+    game::SceneNode* StreetLamp = CreateInstance("StreetLamp1", "streetlamp", "Noir", "RockyTexture");
+    StreetLamp->SetScale(glm::vec3(10, 10, 10));
 }
 
 
@@ -171,10 +177,16 @@ void Game::MainLoop(void){
     // Loop while the user did not close the window
     while (!glfwWindowShouldClose(window_)){
 
-        SceneNode* n = scene_.GetNode("Road");
+        SceneNode* n = scene_.GetNode("Car1");
         //if (n != NULL)std::cout << "LOADED AND HERE" << std::endl;
         //else std::cout << "dumb ass, maybe get it to work"<< std::endl;
         n->SetPosition(glm::vec3(0, 0, 0));
+
+        n = scene_.GetNode("StreetLamp1");
+        n->SetPosition(glm::vec3(10, 0, 0));
+        
+
+
 
         // Draw the scene
         scene_.Draw(&camera_);
