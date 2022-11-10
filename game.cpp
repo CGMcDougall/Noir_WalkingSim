@@ -137,8 +137,8 @@ void Game::SetupResources(void){
     filename = std::string(MATERIAL_DIRECTORY) + std::string("\\Assets/rocky.png");
     resman_.LoadResource(Texture, "RockyTexture", filename.c_str());
 
-    filename = std::string(MATERIAL_DIRECTORY) + std::string("\\Assets/Body_Metallic.png");
-    resman_.LoadResource(Texture, "Car1Text", filename.c_str());
+  /*  filename = std::string(MATERIAL_DIRECTORY) + std::string("\\Assets/Body_Metallic1.png");
+    resman_.LoadResource(Texture, "Car1Text", filename.c_str());*/
 
 
 
