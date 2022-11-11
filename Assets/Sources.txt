@@ -2,4 +2,7 @@ Post Office :
 https://www.turbosquid.com/3d-models/free-max-mode-post-office/570147
 
 ALL Roads:
-	https://www.turbosquid.com/3d-models/free-blend-model-street-roads/986319
+https://www.turbosquid.com/3d-models/free-blend-model-street-roads/986319
+
+Street Lamp:
+https://www.turbosquid.com/3d-models/texturing-street-lamp-3d-1486356

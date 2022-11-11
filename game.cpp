@@ -143,6 +143,8 @@ void Game::SetupResources(void){
   /*  filename = std::string(MATERIAL_DIRECTORY) + std::string("\\Assets/Body_Metallic1.png");
     resman_.LoadResource(Texture, "Car1Text", filename.c_str());*/
 
+    filename = std::string(MATERIAL_DIRECTORY) + std::string("\\Assets/Street_Lamp_Textures/Lampione_Base_SH_BaseColor.png");
+    resman_.LoadResource(Texture, "StreetLampTexture", filename.c_str());
 
 
     filename = std::string(MATERIAL_DIRECTORY) + std::string("\\Assets/BrickBuildText.png");
@@ -167,7 +169,7 @@ void Game::SetupScene(void){
     game::SceneNode *Road = CreateInstance("Car1", "car", "Noir", "RockyTexture");
     Road->SetScale(glm::vec3(0.2, 0.2, 0.2));
 
-    game::SceneNode* StreetLamp = CreateInstance("StreetLamp1", "streetlamp", "Noir", "RockyTexture");
+    game::SceneNode* StreetLamp = CreateInstance("StreetLamp1", "streetlamp", "Noir", "StreetLampTexture");
     StreetLamp->SetScale(glm::vec3(10, 10, 10));
 }
 
