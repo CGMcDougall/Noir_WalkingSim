@@ -103,6 +103,14 @@ void Game::InitEventHandlers(void){
     glfwSetKeyCallback(window_, KeyCallback);
     glfwSetFramebufferSizeCallback(window_, ResizeCallback);
 
+    glfwSetCursorPosCallback(window_, CursorCallback);
+    glfwSetInputMode(window_, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+    //if(glfwRawMouseMotionSupported())glfwSetInputMode(window_, GLFW_RAW_MOUSE_MOTION, GLFW_TRUE);
+    
+    oldMouseX = 0;
+    oldMouseY = 0;
+
+   
     // Set pointer to game object, so that callbacks can access it
     glfwSetWindowUserPointer(window_, (void *) this);
 }
@@ -199,6 +207,50 @@ void Game::MainLoop(void){
     }
 }
 
+void Game::CursorCallback(GLFWwindow* window, double xPos, double yPos) {
+
+    void* ptr = glfwGetWindowUserPointer(window);
+    Game* game = (Game*)ptr;
+
+    double xCord = 0;
+    double yCord = 0;
+    glfwGetCursorPos(window, &xCord, &yCord);
+   
+
+   /* int width, height;
+    glfwGetWindowSize(window, &width, &height);*/
+
+   /* xCord =  (xCord - (width/2))/(width/2);
+    yCord = (yCord - (height / 2))/(height/2);*/
+
+    //std::cout << "now --> " << xCord <<"-"<<yCord<< std::endl;
+
+
+    float rot_factor(glm::pi<float>() / 180);
+    //float xMag = glm::abs(xCord);
+    //float yMag = glm::abs(yCord);
+    float mag = 0.2;
+
+    float trans_factor = 1.0;
+    if (yCord < 0) {
+        game->camera_.Pitch(rot_factor * mag);
+    }
+    if (yCord > 0) {
+        game->camera_.Pitch(-rot_factor * mag);
+    }
+    if (xCord < 0) {
+        game->camera_.Yaw(rot_factor * mag);
+    }
+    if (xCord > 0) {
+        game->camera_.Yaw(-rot_factor * mag);
+    }
+
+    glfwSetCursorPos(window, 0, 0);
+    
+}
+
+
+
 
 void Game::KeyCallback(GLFWwindow* window, int key, int scancode, int action, int mods){
 
@@ -206,6 +258,7 @@ void Game::KeyCallback(GLFWwindow* window, int key, int scancode, int action, in
     void* ptr = glfwGetWindowUserPointer(window);
     Game *game = (Game *) ptr;
 
+    
     // Quit game if 'q' is pressed
     if (key == GLFW_KEY_Q && action == GLFW_PRESS){
         glfwSetWindowShouldClose(window, true);
@@ -219,7 +272,7 @@ void Game::KeyCallback(GLFWwindow* window, int key, int scancode, int action, in
     // View control
     float rot_factor(glm::pi<float>() / 180);
     float trans_factor = 1.0;
-    if (key == GLFW_KEY_UP){
+   /* if (key == GLFW_KEY_UP){
         game->camera_.Pitch(rot_factor);
     }
     if (key == GLFW_KEY_DOWN){
@@ -254,7 +307,22 @@ void Game::KeyCallback(GLFWwindow* window, int key, int scancode, int action, in
     }
     if (key == GLFW_KEY_K){
         game->camera_.Translate(-game->camera_.GetUp()*trans_factor);
+    }*/
+
+    if (key == GLFW_KEY_W) {
+        game->camera_.Translate(game->camera_.GetForward() * trans_factor);
     }
+    if (key == GLFW_KEY_S) {
+        game->camera_.Translate(-game->camera_.GetForward() * trans_factor);
+    }
+    if (key == GLFW_KEY_A) {
+        game->camera_.Translate(-game->camera_.GetSide() * trans_factor);
+    }
+    if (key == GLFW_KEY_D) {
+        game->camera_.Translate(game->camera_.GetSide() * trans_factor);
+    }
+
+
 }
 
 

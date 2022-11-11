@@ -66,6 +66,12 @@ namespace game {
             static void KeyCallback(GLFWwindow* window, int key, int scancode, int action, int mods);
             static void ResizeCallback(GLFWwindow* window, int width, int height);
 
+            static void CursorCallback(GLFWwindow* window, double xPos, double yPos);
+            double oldMouseX, oldMouseY; //helper vals for cursorCallback
+            static void setOldMouseCords(double x, double y); //Sets the oldMouseX/Y values
+            static double getOldMouseX(); //gets oldMouseX
+            static double getOldMouseY(); //gets oldeMouseY
+
             // Asteroid field
             // Create instance of one asteroid
             Asteroid *CreateAsteroidInstance(std::string entity_name, std::string object_name, std::string material_name);
