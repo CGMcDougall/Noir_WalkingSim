@@ -128,7 +128,7 @@ void Game::SetupResources(void){
     filename = std::string(MATERIAL_DIRECTORY) + std::string("\\metal");
     resman_.LoadResource(Material, "Metal", filename.c_str());
 
-    filename = std::string(MATERIAL_DIRECTORY) + std::string("\\Assets/StraightRoad.obj");
+    filename = std::string(MATERIAL_DIRECTORY) + std::string("\\Assets/StraightRoad1.obj");
     resman_.LoadResource(Mesh, "Rd1", filename.c_str());
   
 
@@ -141,6 +141,7 @@ void Game::SetupResources(void){
     filename = std::string(MATERIAL_DIRECTORY) + std::string("\\Assets/Street_Lamp_TS.obj");
     resman_.LoadResource(Mesh, "streetlamp", filename.c_str());
 
+    
 
     /*filename = std::string(MATERIAL_DIRECTORY) + std::string("\\Assets/PostOffice.obj");
     resman_.LoadResource(Mesh, "Rd1", filename.c_str());*/
@@ -172,11 +173,17 @@ void Game::SetupScene(void){
 
     // Create particles
     //game::SceneNode *particles = CreateInstance("ParticleInstance1", "SphereParticles", "ParticleMaterial");
-    game::SceneNode *Road = CreateInstance("Car1", "car", "Noir", "RockyTexture");
-    Road->SetScale(glm::vec3(0.2, 0.2, 0.2));
+    //game::SceneNode *Car = CreateInstance("Car1", "car", "Noir");
+    //Car->SetScale(glm::vec3(0.2, 0.2, 0.2));
 
-    game::SceneNode* StreetLamp = CreateInstance("StreetLamp1", "streetlamp", "Noir", "RockyTexture");
-    StreetLamp->SetScale(glm::vec3(10, 10, 10));
+    //game::SceneNode* Road = CreateInstance("Road1", "Rd1", "Noir");
+    ////Road->SetScale(glm::vec3(0.2, 0.2, 0.2));
+
+    //game::SceneNode* StreetLamp = CreateInstance("StreetLamp1", "streetlamp", "Noir", "RockyTexture");
+    //StreetLamp->SetScale(glm::vec3(10, 10, 10));
+
+    CreateRoad();
+
 }
 
 
@@ -185,16 +192,17 @@ void Game::MainLoop(void){
     // Loop while the user did not close the window
     while (!glfwWindowShouldClose(window_)){
 
-        SceneNode* n = scene_.GetNode("Car1");
-        //if (n != NULL)std::cout << "LOADED AND HERE" << std::endl;
-        //else std::cout << "dumb ass, maybe get it to work"<< std::endl;
-        n->SetPosition(glm::vec3(0, 0, 0));
+        //SceneNode* n = scene_.GetNode("Car1");
+        ////if (n != NULL)std::cout << "LOADED AND HERE" << std::endl;
+        ////else std::cout << "dumb ass, maybe get it to work"<< std::endl;
+        //n->SetPosition(glm::vec3(0, 0, 0));
 
-        n = scene_.GetNode("StreetLamp1");
-        n->SetPosition(glm::vec3(10, 0, 0));
-        
+        //n = scene_.GetNode("StreetLamp1");
+        //n->SetPosition(glm::vec3(10, 0, 0));
+        //
 
-
+        //n = scene_.GetNode("Road1");
+        //n->SetPosition(glm::vec3(0, 3, 0));
 
         // Draw the scene
         scene_.Draw(&camera_);
@@ -380,6 +388,50 @@ void Game::CreateAsteroidField(int num_asteroids){
         ast->SetPosition(glm::vec3(-300.0 + 600.0*((float) rand() / RAND_MAX), -300.0 + 600.0*((float) rand() / RAND_MAX), 600.0*((float) rand() / RAND_MAX)));
         ast->SetOrientation(glm::normalize(glm::angleAxis(glm::pi<float>()*((float) rand() / RAND_MAX), glm::vec3(((float) rand() / RAND_MAX), ((float) rand() / RAND_MAX), ((float) rand() / RAND_MAX)))));
         ast->SetAngM(glm::normalize(glm::angleAxis(0.05f*glm::pi<float>()*((float) rand() / RAND_MAX), glm::vec3(((float) rand() / RAND_MAX), ((float) rand() / RAND_MAX), ((float) rand() / RAND_MAX)))));
+    }
+}
+
+
+//makes a road that extends in the -z direction, with streetlights on rotating sides
+void Game::CreateRoad(int num_roads) {
+
+    bool left = true;
+
+    for (int i = 0; i < num_roads; i++) {
+
+        bool even = (i % 2 == 0);
+
+        // Create instance name
+        std::stringstream ss;
+        ss << i;
+        std::string index = ss.str();
+        std::string name = "RoadInstance" + index;
+
+        // Create asteroid instance
+        game::SceneNode* Road = CreateInstance("Road1", "Rd1", "Noir","RockyTexture");
+        
+        if (even) {
+            game::SceneNode* StreetLamp = CreateInstance("StreetLamp1", "streetlamp", "Noir", "RockyTexture");
+            StreetLamp->SetScale(glm::vec3(1, 3, 1));
+            if (left) {
+                StreetLamp->SetPosition(glm::vec3(-9, -1, -i * 48));
+                StreetLamp->SetOrientation(glm::quat(3.0f, glm::vec3(0, 1, 0)));
+                left = false;
+            }
+            else {
+                StreetLamp->SetPosition(glm::vec3(9, -1, -i * 48));
+                StreetLamp->SetOrientation(glm::quat(-3.0f, glm::vec3(0, 1, 0)));
+                left = true;
+            }
+            
+        }
+           
+
+        // Set attributes of asteroid: random position, orientation, and
+        // angular momentum
+        Road->SetPosition(glm::vec3(0, -1,-i * 49));
+        //ast->SetOrientation(glm::normalize(glm::angleAxis(glm::pi<float>() * ((float)rand() / RAND_MAX), glm::vec3(((float)rand() / RAND_MAX), ((float)rand() / RAND_MAX), ((float)rand() / RAND_MAX)))));
+        //ast->SetAngM(glm::normalize(glm::angleAxis(0.05f * glm::pi<float>() * ((float)rand() / RAND_MAX), glm::vec3(((float)rand() / RAND_MAX), ((float)rand() / RAND_MAX), ((float)rand() / RAND_MAX)))));
     }
 }
 

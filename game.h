@@ -68,15 +68,14 @@ namespace game {
 
             static void CursorCallback(GLFWwindow* window, double xPos, double yPos);
             double oldMouseX, oldMouseY; //helper vals for cursorCallback
-            static void setOldMouseCords(double x, double y); //Sets the oldMouseX/Y values
-            static double getOldMouseX(); //gets oldMouseX
-            static double getOldMouseY(); //gets oldeMouseY
+            
 
             // Asteroid field
             // Create instance of one asteroid
             Asteroid *CreateAsteroidInstance(std::string entity_name, std::string object_name, std::string material_name);
             // Create entire random asteroid field
             void CreateAsteroidField(int num_asteroids = 1500);
+            void CreateRoad(int num_roads = 5);
 
             // Create an instance of an object stored in the resource manager
             SceneNode *CreateInstance(std::string entity_name, std::string object_name, std::string material_name, std::string texture_name = std::string(""));

@@ -40,6 +40,7 @@ namespace game {
             // Create particles distributed over a sphere
             void CreateSphereParticles(std::string object_name, int num_particles = 20000);
 
+
         private:
             // List storing all resources
             std::vector<Resource*> resource_; 
