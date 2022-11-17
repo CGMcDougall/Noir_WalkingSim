@@ -141,6 +141,9 @@ void Game::SetupResources(void){
     filename = std::string(MATERIAL_DIRECTORY) + std::string("\\Assets/Street_Lamp_TS.obj");
     resman_.LoadResource(Mesh, "streetlamp", filename.c_str());
 
+    filename = std::string(MATERIAL_DIRECTORY) + std::string("\\Assets/Building1.obj");
+    resman_.LoadResource(Mesh, "OldHouse", filename.c_str());
+
     
 
     /*filename = std::string(MATERIAL_DIRECTORY) + std::string("\\Assets/PostOffice.obj");
@@ -148,6 +151,15 @@ void Game::SetupResources(void){
 
     filename = std::string(MATERIAL_DIRECTORY) + std::string("\\Assets/rocky.png");
     resman_.LoadResource(Texture, "RockyTexture", filename.c_str());
+
+    filename = std::string(MATERIAL_DIRECTORY) + std::string("\\Assets/RedTempText.png");
+    resman_.LoadResource(Texture, "RedTexture", filename.c_str());
+
+    filename = std::string(MATERIAL_DIRECTORY) + std::string("\\Assets/BlueTempText.png");
+    resman_.LoadResource(Texture, "BlueTexture", filename.c_str());
+
+    filename = std::string(MATERIAL_DIRECTORY) + std::string("\\Assets/GreenTempText.png");
+    resman_.LoadResource(Texture, "GreenTexture", filename.c_str());
 
   /*  filename = std::string(MATERIAL_DIRECTORY) + std::string("\\Assets/Body_Metallic1.png");
     resman_.LoadResource(Texture, "Car1Text", filename.c_str());*/
@@ -181,6 +193,7 @@ void Game::SetupScene(void){
 
     //game::SceneNode* StreetLamp = CreateInstance("StreetLamp1", "streetlamp", "Noir", "RockyTexture");
     //StreetLamp->SetScale(glm::vec3(10, 10, 10));
+
 
     CreateRoad();
 
@@ -400,19 +413,24 @@ void Game::CreateRoad(int num_roads) {
     for (int i = 0; i < num_roads; i++) {
 
         bool even = (i % 2 == 0);
+        bool third = (i % 3 == 0);
 
         // Create instance name
         std::stringstream ss;
         ss << i;
         std::string index = ss.str();
-        std::string name = "RoadInstance" + index;
+        std::string roadname = "RoadInstance" + index;
 
         // Create asteroid instance
-        game::SceneNode* Road = CreateInstance("Road1", "Rd1", "Noir","RockyTexture");
+        game::SceneNode* Road = CreateInstance(roadname, "Rd1", "Noir","RockyTexture");
         
         if (even) {
-            game::SceneNode* StreetLamp = CreateInstance("StreetLamp1", "streetlamp", "Noir", "RockyTexture");
-            StreetLamp->SetScale(glm::vec3(1, 3, 1));
+            
+            std::string lampname = "LampInstance" + index;
+            
+            //Street Lamps
+            game::SceneNode* StreetLamp = CreateInstance(lampname, "streetlamp", "Noir", "RedTexture");
+            StreetLamp->SetScale(glm::vec3(.33f, 1, .33f));
             if (left) {
                 StreetLamp->SetPosition(glm::vec3(-9, -1, -i * 48));
                 StreetLamp->SetOrientation(glm::quat(3.0f, glm::vec3(0, 1, 0)));
@@ -423,9 +441,32 @@ void Game::CreateRoad(int num_roads) {
                 StreetLamp->SetOrientation(glm::quat(-3.0f, glm::vec3(0, 1, 0)));
                 left = true;
             }
+
             
         }
            
+
+        if (third) {
+            //Buildings
+
+            std::string buildingName1 = "BuildingInstanceLeft" + index;
+            std::string buildingName2 = "BuildingInstanceRight" + index;
+
+            float buildingScale = 3;
+
+            game::SceneNode* Building1 = CreateInstance(buildingName1, "OldHouse", "Noir","BlueTexture");
+           
+            Building1->SetScale(glm::vec3(.1, .1, .1) * buildingScale);
+            Building1->Rotate(glm::quat(-1.0f, glm::vec3(0, 1, 0)));
+            Building1->SetPosition(glm::vec3(-34, -1, (-17 * i) - 22));
+
+
+            game::SceneNode* Building2 = CreateInstance(buildingName2, "OldHouse", "Noir", "BlueTexture");
+            Building2->SetScale(glm::vec3(.1, .1, .1) * buildingScale);
+            Building2->Rotate(glm::quat(1.0f, glm::vec3(0, 1, 0)));
+            Building2->SetPosition(glm::vec3(34, -1, (-17 * i)-22));
+
+        }
 
         // Set attributes of asteroid: random position, orientation, and
         // angular momentum
