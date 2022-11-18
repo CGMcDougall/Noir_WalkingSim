@@ -74,6 +74,13 @@ glm::vec3 Camera::GetUp(void) const {
     glm::vec3 current_side = orientation_ * side_;
     glm::vec3 current_up = glm::cross(current_forward, current_side);
     current_up = glm::normalize(current_up);
+
+    //std::cout << glm::to_string(current_up) << std::endl;
+
+    //locks the Camera so it doesnt roll
+    current_up = glm::vec3(0, 1, 0);
+
+
     return current_up;
 }
 
@@ -83,6 +90,10 @@ void Camera::Pitch(float angle){
     glm::quat rotation = glm::angleAxis(angle, GetSide());
     orientation_ = rotation * orientation_;
     orientation_ = glm::normalize(orientation_);
+
+    camera_orientation_ = rotation * orientation_;
+    camera_orientation_ = glm::normalize(camera_orientation_);
+    
 }
 
 
@@ -91,6 +102,7 @@ void Camera::Yaw(float angle){
     glm::quat rotation = glm::angleAxis(angle, GetUp());
     orientation_ = rotation * orientation_;
     orientation_ = glm::normalize(orientation_);
+    
 }
 
 
@@ -99,6 +111,10 @@ void Camera::Roll(float angle){
     glm::quat rotation = glm::angleAxis(angle, GetForward());
     orientation_ = rotation * orientation_;
     orientation_ = glm::normalize(orientation_);
+
+    //camera_orientation_ = rotation * orientation_;
+    //camera_orientation_ = glm::normalize(camera_orientation_);
+    
 }
 
 
@@ -114,6 +130,7 @@ void Camera::SetView(glm::vec3 position, glm::vec3 look_at, glm::vec3 up){
     // Reset orientation and position of camera
     position_ = position;
     orientation_ = glm::quat();
+    camera_orientation_ = glm::quat();
 }
 
 
@@ -150,6 +167,10 @@ void Camera::SetupViewMatrix(void){
     // See slide in "Camera control" for details
     glm::vec3 current_forward = orientation_ * forward_;
     glm::vec3 current_side = orientation_ * side_;
+
+    //current_forward = camera_orientation_ * forward_;
+    //current_side = camera_orientation_ * side_;
+
     glm::vec3 current_up = glm::cross(current_forward, current_side);
     current_up = glm::normalize(current_up);
 

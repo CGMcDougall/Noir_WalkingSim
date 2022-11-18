@@ -144,6 +144,9 @@ void Game::SetupResources(void){
     filename = std::string(MATERIAL_DIRECTORY) + std::string("\\Assets/Building1.obj");
     resman_.LoadResource(Mesh, "OldHouse", filename.c_str());
 
+
+    filename = std::string(MATERIAL_DIRECTORY) + std::string("\\Assets/centralBuilding.obj");
+    resman_.LoadResource(Mesh, "centralBuilding", filename.c_str());
     
 
     /*filename = std::string(MATERIAL_DIRECTORY) + std::string("\\Assets/PostOffice.obj");
@@ -166,8 +169,8 @@ void Game::SetupResources(void){
 
 
 
-    filename = std::string(MATERIAL_DIRECTORY) + std::string("\\Assets/BrickBuildText.png");
-    resman_.LoadResource(Texture, "BrickText", filename.c_str());
+    /*filename = std::string(MATERIAL_DIRECTORY) + std::string("\\Assets/BrickBuildText.png");
+    resman_.LoadResource(Texture, "BrickText", filename.c_str());*/
 
 
     // Create particles for explosion
@@ -194,8 +197,11 @@ void Game::SetupScene(void){
     //game::SceneNode* StreetLamp = CreateInstance("StreetLamp1", "streetlamp", "Noir", "RockyTexture");
     //StreetLamp->SetScale(glm::vec3(10, 10, 10));
 
+    /*game::SceneNode* Building = CreateInstance("centralBuilding1", "centralBuilding", "Noir");
+    Building->SetPosition(glm::vec3(0, 0, -20));
+    Building->SetScale(glm::vec3(0.2, 0.2, 0.2));*/
 
-    CreateRoad();
+    CreateRoad(2);
 
 }
 
@@ -246,7 +252,7 @@ void Game::CursorCallback(GLFWwindow* window, double xPos, double yPos) {
 
     //std::cout << "now --> " << xCord <<"-"<<yCord<< std::endl;
 
-
+    //game->camera_.SetOrientation(glm::quat(0.0f, glm::vec3(0, 0, 1)));
     float rot_factor(glm::pi<float>() / 180);
     //float xMag = glm::abs(xCord);
     //float yMag = glm::abs(yCord);
@@ -265,6 +271,8 @@ void Game::CursorCallback(GLFWwindow* window, double xPos, double yPos) {
     if (xCord > 0) {
         game->camera_.Yaw(-rot_factor * mag);
     }
+
+    
 
     glfwSetCursorPos(window, 0, 0);
     
@@ -289,6 +297,11 @@ void Game::KeyCallback(GLFWwindow* window, int key, int scancode, int action, in
     if (key == GLFW_KEY_SPACE && action == GLFW_PRESS){
         game->animating_ = (game->animating_ == true) ? false : true;
     }
+
+
+    glm::vec3 forwardVec = game->camera_.GetForward();
+    forwardVec = glm::vec3(forwardVec.x, forwardVec.y, forwardVec.z);
+    
 
     // View control
     float rot_factor(glm::pi<float>() / 180);
@@ -331,10 +344,10 @@ void Game::KeyCallback(GLFWwindow* window, int key, int scancode, int action, in
     }*/
 
     if (key == GLFW_KEY_W) {
-        game->camera_.Translate(game->camera_.GetForward() * trans_factor);
+        game->camera_.Translate(forwardVec * trans_factor);
     }
     if (key == GLFW_KEY_S) {
-        game->camera_.Translate(-game->camera_.GetForward() * trans_factor);
+        game->camera_.Translate(-forwardVec * trans_factor);
     }
     if (key == GLFW_KEY_A) {
         game->camera_.Translate(-game->camera_.GetSide() * trans_factor);
@@ -342,6 +355,8 @@ void Game::KeyCallback(GLFWwindow* window, int key, int scancode, int action, in
     if (key == GLFW_KEY_D) {
         game->camera_.Translate(game->camera_.GetSide() * trans_factor);
     }
+
+
 
 
 }
@@ -471,8 +486,27 @@ void Game::CreateRoad(int num_roads) {
         // Set attributes of asteroid: random position, orientation, and
         // angular momentum
         Road->SetPosition(glm::vec3(0, -1,-i * 49));
-        //ast->SetOrientation(glm::normalize(glm::angleAxis(glm::pi<float>() * ((float)rand() / RAND_MAX), glm::vec3(((float)rand() / RAND_MAX), ((float)rand() / RAND_MAX), ((float)rand() / RAND_MAX)))));
-        //ast->SetAngM(glm::normalize(glm::angleAxis(0.05f * glm::pi<float>() * ((float)rand() / RAND_MAX), glm::vec3(((float)rand() / RAND_MAX), ((float)rand() / RAND_MAX), ((float)rand() / RAND_MAX)))));
+        
+        if (i == num_roads - 1) {
+            game::SceneNode* CentralBuilding = CreateInstance("CentralBuilding", "centralBuilding", "Noir");
+            CentralBuilding->SetPosition(glm::vec3(0,-1, - i * 113));
+            CentralBuilding->Scale(glm::vec3(1,1,1)*50.0f);
+            
+            game::SceneNode* Road2 = CreateInstance("landing1", "Rd1", "Noir", "RockyTexture");
+            game::SceneNode* Road3 = CreateInstance("landing2", "Rd1", "Noir", "RockyTexture");
+            game::SceneNode* Road4 = CreateInstance("landing3", "Rd1", "Noir", "RockyTexture");
+            
+            Road2->SetPosition(glm::vec3(48,-1, -i * 70));
+            Road2->Rotate(glm::quat(1,glm::vec3(0,1,0)));
+            Road3->SetPosition(glm::vec3(0,-1, -i * 70));
+            Road3->Rotate(glm::quat(1, glm::vec3(0, 1, 0)));
+            Road4->SetPosition(glm::vec3(-48,-1, -i * 70));
+            Road4->Rotate(glm::quat(1, glm::vec3(0, 1, 0)));
+
+        }
+
+
+
     }
 }
 

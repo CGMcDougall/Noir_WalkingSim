@@ -38,16 +38,18 @@ void main()
 	vec3 r = (0,0,-l + 2 * n * (l*n));
 	spec = max(0.0,dot(v,r));
 	
-	float amb = 5;
+	float amb = 1;
 	spec = pow(spec,41);
 
 
     // Use texture in determining fragment colour
 
-    gl_FragColor = pixel;
+    //gl_FragColor = pixel;
 	
-	//gl_FragColor = lightcol*pixel*diffuse +
-	//lightcol*vec4(1,1,1,1)*spec +
-	//lightcol*pixel*amb;
+	
+
+	gl_FragColor = lightcol*diffuse +
+	lightcol*vec4(1,1,1,1)*spec +
+	lightcol*pixel*amb;
 
 }
