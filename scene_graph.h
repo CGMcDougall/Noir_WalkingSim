@@ -70,6 +70,13 @@ namespace game {
             // Save texture to a file in ppm format
             void SaveTexture(char *filename);
 
+            //add Light source to list of light sources or change lightsource at index i. Index 0 is always player position
+            void AddLightSource(glm::vec3 l,int i = -1);
+            
+    private:
+            std::vector<glm::vec3> lightSource;
+
+
     }; // class SceneGraph
 
 } // namespace game

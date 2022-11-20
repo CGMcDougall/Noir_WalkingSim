@@ -11,6 +11,9 @@
 
 #include "resource.h"
 #include "camera.h"
+#include <vector>
+#include <sstream>
+
 
 namespace game {
 
@@ -56,6 +59,9 @@ namespace game {
             GLsizei GetSize(void) const;
             GLuint GetMaterial(void) const;
 
+            void setLightSources(std::vector<glm::vec3> li);
+
+
         private:
             std::string name_; // Name of the scene node
             GLuint array_buffer_; // References to geometry: vertex and array buffers
@@ -70,6 +76,9 @@ namespace game {
 
             // Set matrices that transform the node in a shader program
             void SetupShader(GLuint program);
+
+            //list of lightSources
+            std::vector<glm::vec3> lightSource;
 
     }; // class SceneNode
 

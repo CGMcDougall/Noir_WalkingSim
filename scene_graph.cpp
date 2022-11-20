@@ -85,6 +85,8 @@ void SceneGraph::Draw(Camera *camera){
 
     // Draw all scene nodes
     for (int i = 0; i < node_.size(); i++){
+        //Add something to add lightsoruces to each node
+        node_[i]->setLightSources(lightSource);
         node_[i]->Draw(camera);
     }
 }
@@ -93,6 +95,7 @@ void SceneGraph::Draw(Camera *camera){
 void SceneGraph::Update(void){
 
     for (int i = 0; i < node_.size(); i++){
+        
         node_[i]->Update();
     }
 }
@@ -254,5 +257,19 @@ void SceneGraph::SaveTexture(char *filename){
     // Reset frame buffer
     glBindFramebuffer(GL_FRAMEBUFFER, 0);
 }
+
+//add/change LightSource, index 0 is always player position
+void SceneGraph::AddLightSource(glm::vec3 li, int i) {
+    if (i == -1) {
+        lightSource.push_back(li);
+    }
+    else {
+        if(i < lightSource.size())lightSource[i] = li;
+        else lightSource.push_back(li);
+    }
+}
+
+
+
 
 } // namespace game

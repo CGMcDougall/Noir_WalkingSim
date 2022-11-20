@@ -145,7 +145,7 @@ void Game::SetupResources(void){
     resman_.LoadResource(Mesh, "OldHouse", filename.c_str());
 
 
-    filename = std::string(MATERIAL_DIRECTORY) + std::string("\\Assets/centralBuilding.obj");
+    filename = std::string(MATERIAL_DIRECTORY) + std::string("\\Assets/Buildings/CentralBuilding.obj");
     resman_.LoadResource(Mesh, "centralBuilding", filename.c_str());
     
 
@@ -201,6 +201,8 @@ void Game::SetupScene(void){
     Building->SetPosition(glm::vec3(0, 0, -20));
     Building->SetScale(glm::vec3(0.2, 0.2, 0.2));*/
 
+
+
     CreateRoad(2);
 
 }
@@ -222,6 +224,8 @@ void Game::MainLoop(void){
 
         //n = scene_.GetNode("Road1");
         //n->SetPosition(glm::vec3(0, 3, 0));
+
+        scene_.AddLightSource(camera_.GetPosition(), 0);
 
         // Draw the scene
         scene_.Draw(&camera_);
@@ -489,8 +493,8 @@ void Game::CreateRoad(int num_roads) {
         
         if (i == num_roads - 1) {
             game::SceneNode* CentralBuilding = CreateInstance("CentralBuilding", "centralBuilding", "Noir");
-            CentralBuilding->SetPosition(glm::vec3(0,-1, - i * 113));
-            CentralBuilding->Scale(glm::vec3(1,1,1)*50.0f);
+            CentralBuilding->SetPosition(glm::vec3(0,-1.5, - i * 113));
+            CentralBuilding->Scale(glm::vec3(1,1,1)*0.5f);
             
             game::SceneNode* Road2 = CreateInstance("landing1", "Rd1", "Noir", "RockyTexture");
             game::SceneNode* Road3 = CreateInstance("landing2", "Rd1", "Noir", "RockyTexture");

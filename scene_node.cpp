@@ -190,6 +190,35 @@ void SceneNode::SetupShader(GLuint program){
     glVertexAttribPointer(tex_att, 2, GL_FLOAT, GL_FALSE, 11*sizeof(GLfloat), (void *) (9*sizeof(GLfloat)));
     glEnableVertexAttribArray(tex_att);
 
+
+    /*GLint lightSources = glGetAttribLocation(program, "uv");
+    glVertexAttribPointer(tex_att, 2, GL_FLOAT, GL_FALSE, 11 * sizeof(GLfloat), (void*)(9 * sizeof(GLfloat)));
+    glEnableVertexAttribArray();*/
+
+    //glm::vec3 lightSources[5] = { glm::vec3(0,0,0),glm::vec3(0,0,0),glm::vec3(0,0,0) ,glm::vec3(0,0,0) ,glm::vec3(0,0,0) };
+
+
+    //glUniform3fv(originsLoc, origins.size(), reinterpret_cast<GLfloat*>(trackObstacle->obstaclesPopupNormals.data()));
+
+    for (int i = 0; i < 5; i++) {
+
+        std::stringstream ss;
+        ss << i;
+        std::string index = ss.str();
+        std::string name = "lightSources[" + index + "]";
+        //std::cout << name << std::endl;
+
+        const char* c_str = name.c_str();
+
+        GLint sources = glGetUniformLocation(program, c_str);
+        //std::cout << "Got to Here? " << i << std::endl;
+        if (i >= lightSource.size())break;
+        //std::cout << "still Here? " << i << std::endl;
+        glm::vec3 li = lightSource.at(i);
+        glUniform3f(sources, li.x, li.y, li.z);
+    }
+    
+
     // World transformation
     glm::mat4 scaling = glm::scale(glm::mat4(1.0), scale_);
     glm::mat4 rotation = glm::mat4_cast(orientation_);
@@ -221,5 +250,16 @@ void SceneNode::SetupShader(GLuint program){
     double current_time = glfwGetTime();
     glUniform1f(timer_var, (float) current_time);
 }
+
+
+
+void SceneNode::setLightSources(std::vector<glm::vec3> li) {
+    lightSource.clear();
+    for(int i = 0; i < li.size(); i++) {
+        lightSource.push_back(li.at(i));
+    }
+    //std::cout << lightSource.size() << " this is what size should be" << std::endl;
+}
+
 
 } // namespace game;
