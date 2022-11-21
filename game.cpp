@@ -225,7 +225,7 @@ void Game::MainLoop(void){
         //n = scene_.GetNode("Road1");
         //n->SetPosition(glm::vec3(0, 3, 0));
 
-        scene_.AddLightSource(camera_.GetPosition(), 0);
+        //scene_.AddLightSource(camera_.GetPosition(), 0);
 
         // Draw the scene
         scene_.Draw(&camera_);

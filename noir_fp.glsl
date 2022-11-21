@@ -19,9 +19,9 @@ float pi = 3.1415926535897932;
 // Material attributes (constants)
 
 // Blue plastic
-vec3 diffuse_color = vec3(0.0, 0.0, 0.5);
-vec3 specular_color = vec3(0.1, 0.1, 0.1);
-vec3 ambient_color = vec3(0, 0, 0);
+vec3 diffuse_color = vec3(0.2, 0.2, 0.2);
+vec3 specular_color = vec3(0.5, 0.5, 0.5);
+vec3 ambient_color = vec3(0.1, 0.1, 0.1);
 
 float roughness = 0.5;
 float light_intensity = 1.0*pi;
@@ -115,10 +115,12 @@ void main()
 	illum = lightCalc(light_pos);
     for(int i = 0; i < 5; i++)illum += lightCalc(lightSources[i]);
 
-    // Assign illumination to the fragment
-    gl_FragColor = vec4(illum, 1.0);
-    //gl_FragColor = pixel * illum;
+    // How "grey" it is
+    float greyFactor = 1.0;
 
+    // Modify the texture lookups to be greyer
+    float grey = 0.21 * pixel.r + 0.71 * pixel.g + 0.07 * pixel.b;
+    gl_FragColor = vec4(pixel.rgb * (1.0 - greyFactor) + (grey * greyFactor), pixel.a) * vec4(illum, 1.0);
 }
 
 
