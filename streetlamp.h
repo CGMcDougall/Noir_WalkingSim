@@ -1,9 +1,6 @@
 #ifndef STREETLAMP_H_
 #define STREETLAMP_H_
 
-#ifndef ASTEROID_H_
-#define ASTEROID_H_
-
 #include <string>
 #define GLEW_STATIC
 #include <GL/glew.h>

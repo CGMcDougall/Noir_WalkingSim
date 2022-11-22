@@ -11,6 +11,7 @@
 #include "resource_manager.h"
 #include "camera.h"
 #include "asteroid.h"
+#include "streetlamp.h"
 
 namespace game {
 
@@ -75,6 +76,9 @@ namespace game {
             Asteroid *CreateAsteroidInstance(std::string entity_name, std::string object_name, std::string material_name);
             // Create entire random asteroid field
             void CreateAsteroidField(int num_asteroids = 1500);
+
+            Streetlamp* Game::CreateStreetlampInstance(std::string entity_name, std::string object_name, std::string material_name, std::string texture_name);
+
             void CreateRoad(int num_roads = 5);
 
             // Create an instance of an object stored in the resource manager

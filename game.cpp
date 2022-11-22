@@ -423,6 +423,32 @@ void Game::CreateAsteroidField(int num_asteroids){
     }
 }
 
+Streetlamp* Game::CreateStreetlampInstance(std::string entity_name, std::string object_name, std::string material_name, std::string texture_name) {
+    // Get resources
+    Resource* geom = resman_.GetResource(object_name);
+    if (!geom) {
+        throw(GameException(std::string("Could not find resource \"") + object_name + std::string("\"")));
+    }
+
+    Resource* mat = resman_.GetResource(material_name);
+    if (!mat) {
+        throw(GameException(std::string("Could not find resource \"") + material_name + std::string("\"")));
+    }
+
+    Resource* tex = NULL;
+    if (texture_name != "") {
+        tex = resman_.GetResource(texture_name);
+        if (!tex) {
+            throw(GameException(std::string("Could not find resource \"") + material_name + std::string("\"")));
+        }
+    }
+
+    // Create streetlamp instance
+    Streetlamp* streetlamp = new Streetlamp(entity_name, geom, mat);
+    scene_.AddNode(streetlamp);
+    return streetlamp;
+
+}
 
 //makes a road that extends in the -z direction, with streetlights on rotating sides
 void Game::CreateRoad(int num_roads) {
@@ -448,16 +474,18 @@ void Game::CreateRoad(int num_roads) {
             std::string lampname = "LampInstance" + index;
             
             //Street Lamps
-            game::SceneNode* StreetLamp = CreateInstance(lampname, "streetlamp", "Noir", "RedTexture");
+            Streetlamp* StreetLamp = CreateStreetlampInstance(lampname, "streetlamp", "Noir", "RedTexture");
             StreetLamp->SetScale(glm::vec3(.33f, 1, .33f));
             if (left) {
                 StreetLamp->SetPosition(glm::vec3(-9, -1, -i * 48));
                 StreetLamp->SetOrientation(glm::quat(3.0f, glm::vec3(0, 1, 0)));
+                StreetLamp->setLightPos(StreetLamp->GetOrientation() * StreetLamp->GetScale()  * glm::vec3(1, 0, 0));
                 left = false;
             }
             else {
                 StreetLamp->SetPosition(glm::vec3(9, -1, -i * 48));
                 StreetLamp->SetOrientation(glm::quat(-3.0f, glm::vec3(0, 1, 0)));
+                StreetLamp->setLightPos(StreetLamp->GetOrientation() * StreetLamp->GetScale() * glm::vec3(1, 0, 0));
                 left = true;
             }
 
