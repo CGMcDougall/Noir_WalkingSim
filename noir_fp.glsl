@@ -18,18 +18,16 @@ float pi = 3.1415926535897932;
 
 // Material attributes (constants)
 
-// Blue plastic
+// Grayscale lighting with a slight blue ambient hue (nighttime is never pure black)
 vec3 diffuse_color = vec3(0.2, 0.2, 0.2);
 vec3 specular_color = vec3(0.5, 0.5, 0.5);
-vec3 ambient_color = vec3(0.1, 0.1, 0.1);
+vec3 ambient_color = vec3(0.1, 0.1, 0.12);
 
 float roughness = 0.5;
 float light_intensity = 1.0*pi;
 
 
 vec3 lightCalc(vec3 lightPos){
-
-
 
   vec3 N, // Interpolated normal for fragment
          L, // Light-source direction
@@ -61,7 +59,7 @@ vec3 lightCalc(vec3 lightPos){
 
     // Microfacet geometry
     // Fresnel term
-    //vec3 fresnel = (vec3(1.0, 1.0, 1.0) - specular_color)*pow(1 - LH, 5.0);
+    //vec3 fresnel = (vec3(1.0, 1.0, 1.0) - specular_color)*pow(1 - LH, 2.0);
     vec3 fresnel = specular_color + (vec3(1.0, 1.0, 1.0) - specular_color)*pow(1 - LH, 5.0);
 
 
@@ -78,42 +76,13 @@ vec3 lightCalc(vec3 lightPos){
 
 }
 
-vec3 lightingCal(vec3 lightPos, vec3 norm, vec3 viewDir){
-
-      vec3 lightDir = normalize(lightPos - position_interp);
-      
-      float diff = max(dot(norm,lightDir),0.0);
-
-      vec3 reflectDir = reflect(-lightDir,norm);
-      float spec = pow(max(dot(viewDir,reflectDir),0.0),10);
-
-      float dist = length(lightPos - position_interp);
-      
-      //float attenuation = 1.0/(l)
-
-      vec3 ambi = vec3(0.2,0.2,0.2);
-      //vec3 diffuse = 
-
-
-      return vec3(0,0,0);
-}
-
-
-
-
 void main() 
 {
 
-    vec3 illum= vec3(0,0,0);
-       
-    
+    vec3 illum = vec3(0,0,0);
     vec4 pixel = texture(texture_map, vertex_uv);
-    //vec3 pixel = text
 
-  
-    
-	illum = lightCalc(light_pos);
-    for(int i = 0; i < 5; i++)illum += lightCalc(lightSources[i]);
+    for(int i = 0; i < 1; i++)illum += lightCalc(lightSources[i]);
 
     // How "grey" it is
     float greyFactor = 1.0;

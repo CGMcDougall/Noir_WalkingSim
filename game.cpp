@@ -260,7 +260,7 @@ void Game::CursorCallback(GLFWwindow* window, double xPos, double yPos) {
     float rot_factor(glm::pi<float>() / 180);
     //float xMag = glm::abs(xCord);
     //float yMag = glm::abs(yCord);
-    float mag = 0.2;
+    float mag = 0.4;
 
     float trans_factor = 1.0;
     if (yCord < 0) {
