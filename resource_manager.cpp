@@ -863,4 +863,85 @@ void ResourceManager::CreateSphereParticles(std::string object_name, int num_par
     AddResource(PointSet, object_name, vbo, 0, num_particles);
 }
 
+void ResourceManager::CreateSmokeParticles(std::string object_name, int num_particles) {
+
+
+    // Create a set of points which will be the particles
+    // This is similar to drawing a sphere: we will sample points on a sphere, but will allow them to also deviate a bit from the sphere along the normal (change of radius)
+
+    // Data buffer
+    GLfloat* particle = NULL;
+
+    // Number of attributes per particle: position (3), normal (3), and color (3), texture coordinates (2)
+    const int particle_att = 11;
+
+    // Allocate memory for buffer
+    try {
+        particle = new GLfloat[num_particles * particle_att];
+    }
+    catch (std::exception& e) {
+        throw e;
+    }
+
+    float trad = 0.2; // Defines the starting point of the particles along the normal
+    float maxspray = 0.5; // This is how much we allow the points to deviate from the sphere
+    float u, v, w, theta, phi, spray; // Work variables
+
+    for (int i = 0; i < num_particles; i++) {
+
+        // Get three random numbers
+        u = ((double)rand() / (RAND_MAX));
+        v = ((double)rand() / (RAND_MAX));
+        w = ((double)rand() / (RAND_MAX));
+
+
+        float r = (float)rand() / (float)(RAND_MAX);
+        float range = 3 - 1;
+        float distr = (r * range) - range / 5;
+
+        r = (float)rand() / (float)(RAND_MAX);
+        range = 4 - 2;
+        float time = (r * range);
+
+        //std::cout << distr << std::endl;
+
+        // Use u to define the angle theta along one direction of the sphere
+        theta = u * 2.0 * glm::pi<float>();
+        // Use v to define the angle phi along the other direction of the sphere
+        phi = acos(2.0 * v - 1.0);
+
+        // Use w to define how much we can deviate from the surface of the sphere (change of radius)
+        spray = maxspray * pow((float)w, (float)(1.0 / 3.0)); // Cubic root of w
+
+        // Define the normal and point based on theta, phi and the spray; normal will be used as velocity
+        glm::vec3 normal(spray * cos(theta) * sin(phi), -glm::abs(tan(w)), spray * cos(phi));
+        glm::vec3 position(normal.x * trad, 0, normal.z * trad);
+        glm::vec3 color(time, distr, 1.0 - (i / (float)num_particles)); // We can use the color for debug, if needed
+
+        // Add vectors to the data buffer
+        glm::vec2 vertex_coord = glm::vec2(i / (float)num_particles, i % num_particles); // good parameterization but seam at last triangle
+
+        for (int k = 0; k < 3; k++) {
+            particle[i * particle_att + k] = position[k];
+            particle[i * particle_att + k + 3] = normal[k];
+            particle[i * particle_att + k + 6] = color[k];
+        }
+        particle[i * particle_att + 9] = 0.5;// vertex_coord[0];
+        particle[i * particle_att + 10] = 0.5; //vertex_coord[1];
+    }
+
+    // Create OpenGL buffer and copy data
+    GLuint vbo;
+    glGenBuffers(1, &vbo);
+    glBindBuffer(GL_ARRAY_BUFFER, vbo);
+    glBufferData(GL_ARRAY_BUFFER, num_particles * particle_att * sizeof(GLfloat), particle, GL_STATIC_DRAW);
+
+    // Free data buffers
+    delete[] particle;
+
+    // Create resource
+    AddResource(PointSet, object_name, vbo, 0, num_particles);
+}
+
+
 } // namespace game;

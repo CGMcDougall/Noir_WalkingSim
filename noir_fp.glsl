@@ -80,15 +80,16 @@ void main()
 {
 
     vec3 illum = vec3(0,0,0);
+    
+
     vec4 pixel = texture(texture_map, vertex_uv);
 
     for(int i = 0; i < 1; i++)illum += lightCalc(lightSources[i]);
-
-    // How "grey" it is
+    
     float greyFactor = 1.0;
 
     // Modify the texture lookups to be greyer
-    float grey = 0.21 * pixel.r + 0.71 * pixel.g + 0.07 * pixel.b;
+    float grey = 2.51 * pixel.r + 0.71 * pixel.g + 0.07 * pixel.b;
     gl_FragColor = vec4(pixel.rgb * (1.0 - greyFactor) + (grey * greyFactor), pixel.a) * vec4(illum, 1.0);
 }
 

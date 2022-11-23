@@ -12,8 +12,14 @@ namespace game {
 
 // Main window settings
 const std::string window_title_g = "Demo";
-const unsigned int window_width_g = 800;
-const unsigned int window_height_g = 600;
+
+//const unsigned int window_width_g = 800;
+//const unsigned int window_height_g = 600;
+
+const unsigned int window_width_g = 800*2;
+const unsigned int window_height_g = 600*1.5;
+
+
 const bool window_full_screen_g = false;
 
 // Viewport and camera settings
@@ -128,6 +134,9 @@ void Game::SetupResources(void){
     filename = std::string(MATERIAL_DIRECTORY) + std::string("\\road_noir");
     resman_.LoadResource(Material, "RoadNoir", filename.c_str());
 
+    filename = std::string(MATERIAL_DIRECTORY) + std::string("/cigarette");
+    resman_.LoadResource(Material, "Cigarette", filename.c_str());
+
     filename = std::string(MATERIAL_DIRECTORY) + std::string("\\metal");
     resman_.LoadResource(Material, "Metal", filename.c_str());
 
@@ -150,10 +159,22 @@ void Game::SetupResources(void){
 
     filename = std::string(MATERIAL_DIRECTORY) + std::string("\\Assets/Buildings/CentralBuilding.obj");
     resman_.LoadResource(Mesh, "centralBuilding", filename.c_str());
-    
 
-    /*filename = std::string(MATERIAL_DIRECTORY) + std::string("\\Assets/PostOffice.obj");
-    resman_.LoadResource(Mesh, "Rd1", filename.c_str());*/
+    filename = std::string(MATERIAL_DIRECTORY) + std::string("\\Assets/Grate/GrateModel.obj");
+    resman_.LoadResource(Mesh, "Grate", filename.c_str());
+    
+    filename = std::string(MATERIAL_DIRECTORY) + std::string("\\Assets/Cig/Cig.obj");
+    resman_.LoadResource(Mesh, "Cig", filename.c_str());
+
+   /* filename = std::string(MATERIAL_DIRECTORY) + std::string("\\Assets/TrafficLight/Traffic_Lights.obj");
+    resman_.LoadResource(Mesh, "TrafficLight", filename.c_str());*/
+
+
+    filename = std::string(MATERIAL_DIRECTORY) + std::string("\\Assets/Buildings/Building2.obj");
+    resman_.LoadResource(Mesh, "B2", filename.c_str());
+
+    filename = std::string(MATERIAL_DIRECTORY) + std::string("\\Assets/Buildings/Building3.obj");
+    resman_.LoadResource(Mesh, "B3", filename.c_str());
 
     filename = std::string(MATERIAL_DIRECTORY) + std::string("\\Assets/rocky.png");
     resman_.LoadResource(Texture, "RockyTexture", filename.c_str());
@@ -164,8 +185,16 @@ void Game::SetupResources(void){
     filename = std::string(MATERIAL_DIRECTORY) + std::string("\\Assets/BlueTempText.png");
     resman_.LoadResource(Texture, "BlueTexture", filename.c_str());
 
+    filename = std::string(MATERIAL_DIRECTORY) + std::string("\\Assets/Cig/CigText.png");
+    resman_.LoadResource(Texture, "CigText", filename.c_str());
+
+    filename = std::string(MATERIAL_DIRECTORY) + std::string("\\Assets/smoke1.png");
+    resman_.LoadResource(Texture, "SmokeText", filename.c_str());
+
     filename = std::string(MATERIAL_DIRECTORY) + std::string("\\Assets/GreenTempText.png");
     resman_.LoadResource(Texture, "GreenTexture", filename.c_str());
+
+
 
   /*  filename = std::string(MATERIAL_DIRECTORY) + std::string("\\Assets/Body_Metallic1.png");
     resman_.LoadResource(Texture, "Car1Text", filename.c_str());*/
@@ -179,7 +208,7 @@ void Game::SetupResources(void){
     // Create particles for explosion
     //resman_.CreateSphereParticles("SphereParticles");
     
-
+    resman_.CreateSmokeParticles("SmokeParticles");
     
 }
 
@@ -200,13 +229,18 @@ void Game::SetupScene(void){
     //game::SceneNode* StreetLamp = CreateInstance("StreetLamp1", "streetlamp", "Noir", "RockyTexture");
     //StreetLamp->SetScale(glm::vec3(10, 10, 10));
 
-    /*game::SceneNode* Building = CreateInstance("centralBuilding1", "centralBuilding", "Noir");
-    Building->SetPosition(glm::vec3(0, 0, -20));
-    Building->SetScale(glm::vec3(0.2, 0.2, 0.2));*/
+   /* game::SceneNode* Building = CreateInstance("one", "car", "Noir");
+    Building->SetPosition(glm::vec3(20, 0, -20));
+    Building->SetScale(glm::vec3(1, 1, 1)*0.1f);*/
 
+   /* game::SceneNode* Building2 = CreateInstance("two", "TrafficLight", "Noir");
+    Building2->SetPosition(glm::vec3(-20, 0, -20));
+    Building2->SetScale(glm::vec3(1, 1, 1)*8.0f);*/
 
+    game::SceneNode* smoke1 = CreateInstance("Smoke1", "SmokeParticles", "Cigarette", "SmokeText");
+    smoke1->SetPosition(glm::vec3(-1, 0, 0));
 
-    CreateRoad(2);
+    //CreateRoad(2);
 
 }
 
@@ -447,10 +481,10 @@ Streetlamp* Game::CreateStreetlampInstance(std::string entity_name, std::string 
     }
 
     // Create streetlamp instance
-    Streetlamp* streetlamp = new Streetlamp(entity_name, geom, mat);
+   /* Streetlamp* streetlamp = new Streetlamp(entity_name, geom, mat);
     scene_.AddNode(streetlamp);
     streetlamps_.push_back(streetlamp);
-    return streetlamp;
+    return streetlamp;*/
 
 }
 
