@@ -60,8 +60,8 @@ namespace game {
             GLuint GetMaterial(void) const;
 
             void setLightSources(std::vector<glm::vec3> li);
+            void setDirectionalLightSources(std::vector<glm::vec3> li);
 
-            void AddDirectionalLight(glm::vec3 li) { lampLightPos.push_back(li); };
 
         private:
             std::string name_; // Name of the scene node

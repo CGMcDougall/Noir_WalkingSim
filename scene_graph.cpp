@@ -87,7 +87,9 @@ void SceneGraph::Draw(Camera *camera){
     for (int i = 0; i < node_.size(); i++){
         //Add something to add lightsoruces to each node
         node_[i]->setLightSources(lightSource);
+        node_[i]->setDirectionalLightSources(directionalLightSource);
         node_[i]->Draw(camera);
+
     }
 }
 
@@ -270,11 +272,7 @@ void SceneGraph::AddLightSource(glm::vec3 li, int i) {
 }
 
 void SceneGraph::AddDirectionalLight(glm::vec3 li) {
-    for (int i = 0; i < node_.size(); i++) {
-        SceneNode* n = node_.at(i);
-        n->AddDirectionalLight(li);
-    }
-
+    directionalLightSource.push_back(li);
 }
 
 

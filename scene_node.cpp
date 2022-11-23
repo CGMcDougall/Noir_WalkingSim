@@ -224,7 +224,8 @@ void SceneNode::SetupShader(GLuint program){
         lampP[i*3+1] = lampLightPos.at(i).y;
         lampP[i*3+2] = lampLightPos.at(i).z;
     }
-    GLint lampLightPositions = glGetUniformLocation(program, "lampLightPos[1]");
+    //std::cout << lampLightPos.at(0).x << std::endl;
+    GLint lampLightPositions = glGetUniformLocation(program, "lampLightPos");
     glUniform3fv(lampLightPositions, lampLightPos.size(), lampP);
 
 
@@ -270,5 +271,12 @@ void SceneNode::setLightSources(std::vector<glm::vec3> li) {
     //std::cout << lightSource.size() << " this is what size should be" << std::endl;
 }
 
+
+void SceneNode::setDirectionalLightSources(std::vector<glm::vec3> li) {
+    lampLightPos.clear();
+    for (int i = 0; i < li.size(); i++) {
+        lampLightPos.push_back(li.at(i));
+    }
+}
 
 } // namespace game;

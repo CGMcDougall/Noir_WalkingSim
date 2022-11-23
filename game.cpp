@@ -504,33 +504,8 @@ void Game::CreateRoad(int num_roads) {
         std::string index = ss.str();
         std::string roadname = "RoadInstance" + index;
 
-        // Create asteroid instance
-        game::SceneNode* Road = CreateInstance(roadname, "Rd1", "Noir");
-        
-        if (even) {
-            
-            std::string lampname = "LampInstance" + index;
-            
-            //Street Lamps
-            Streetlamp* StreetLamp = CreateStreetlampInstance(lampname, "streetlamp", "Noir", "RedTexture");
-            StreetLamp->SetScale(glm::vec3(.33f, 1, .33f));
-            if (left) {
-                StreetLamp->SetPosition(glm::vec3(-9, -1, -i * 48));
-                StreetLamp->SetOrientation(glm::quat(3.0f, glm::vec3(0, 1, 0)));
-                StreetLamp->setLightPos(StreetLamp->GetOrientation() * StreetLamp->GetScale()  * glm::vec3(1, 0, 0));
-                left = false;
-            }
-            else {
-                StreetLamp->SetPosition(glm::vec3(9, -1, -i * 48));
-                StreetLamp->SetOrientation(glm::quat(-3.0f, glm::vec3(0, 1, 0)));
-                StreetLamp->setLightPos(StreetLamp->GetOrientation() * StreetLamp->GetScale() * glm::vec3(1, 0, 0));
-                left = true;
-            }
-
-            scene_.AddDirectionalLight(StreetLamp->GetPosition() + StreetLamp->getLightPos());
-            
-        }
-           
+        // Create road instance
+        game::SceneNode* Road = CreateInstance(roadname, "Rd1", "RoadNoir");
 
         if (third) {
             //Buildings
@@ -540,14 +515,14 @@ void Game::CreateRoad(int num_roads) {
 
             float buildingScale = 3;
 
-            game::SceneNode* Building1 = CreateInstance(buildingName1, "OldHouse", "Noir","BlueTexture");
+            game::SceneNode* Building1 = CreateInstance(buildingName1, "OldHouse", "RoadNoir","");
            
             Building1->SetScale(glm::vec3(.1, .1, .1) * buildingScale);
             Building1->Rotate(glm::quat(-1.0f, glm::vec3(0, 1, 0)));
             Building1->SetPosition(glm::vec3(-34, -1, (-17 * i) - 22));
 
 
-            game::SceneNode* Building2 = CreateInstance(buildingName2, "OldHouse", "Noir", "BlueTexture");
+            game::SceneNode* Building2 = CreateInstance(buildingName2, "OldHouse", "RoadNoir", "");
             Building2->SetScale(glm::vec3(.1, .1, .1) * buildingScale);
             Building2->Rotate(glm::quat(1.0f, glm::vec3(0, 1, 0)));
             Building2->SetPosition(glm::vec3(34, -1, (-17 * i)-22));
@@ -559,13 +534,13 @@ void Game::CreateRoad(int num_roads) {
         Road->SetPosition(glm::vec3(0, -1,-i * 49));
         
         if (i == num_roads - 1) {
-            game::SceneNode* CentralBuilding = CreateInstance("CentralBuilding", "centralBuilding", "Noir");
+            game::SceneNode* CentralBuilding = CreateInstance("CentralBuilding", "centralBuilding", "RoadNoir");
             CentralBuilding->SetPosition(glm::vec3(0,-1.5, - i * 113));
             CentralBuilding->Scale(glm::vec3(1,1,1)*0.5f);
             
-            game::SceneNode* Road2 = CreateInstance("landing1", "Rd1", "Noir", "");
-            game::SceneNode* Road3 = CreateInstance("landing2", "Rd1", "Noir", "");
-            game::SceneNode* Road4 = CreateInstance("landing3", "Rd1", "Noir", "");
+            game::SceneNode* Road2 = CreateInstance("landing1", "Rd1", "RoadNoir", "");
+            game::SceneNode* Road3 = CreateInstance("landing2", "Rd1", "RoadNoir", "");
+            game::SceneNode* Road4 = CreateInstance("landing3", "Rd1", "RoadNoir", "");
             
             Road2->SetPosition(glm::vec3(48,-1, -i * 70));
             Road2->Rotate(glm::quat(1,glm::vec3(0,1,0)));
@@ -576,6 +551,29 @@ void Game::CreateRoad(int num_roads) {
 
         }
 
+        if (even) {
+
+            std::string lampname = "LampInstance" + index;
+
+            //Street Lamps
+            Streetlamp* StreetLamp = CreateStreetlampInstance(lampname, "streetlamp", "RoadNoir", "");
+            StreetLamp->SetScale(glm::vec3(.33f, 1, .33f));
+            if (left) {
+                StreetLamp->SetPosition(glm::vec3(-9, -1, -i * 48));
+                StreetLamp->SetOrientation(glm::quat(3.0f, glm::vec3(0, 1, 0)));
+                StreetLamp->setLightPos(StreetLamp->GetOrientation() * StreetLamp->GetScale() * glm::vec3(2, 8, 0));
+                left = false;
+            }
+            else {
+                StreetLamp->SetPosition(glm::vec3(9, -1, -i * 48));
+                StreetLamp->SetOrientation(glm::quat(-3.0f, glm::vec3(0, 1, 0)));
+                StreetLamp->setLightPos(StreetLamp->GetOrientation() * StreetLamp->GetScale() * glm::vec3(2, 8, 0));
+                left = true;
+            }
+
+            scene_.AddDirectionalLight((StreetLamp->GetPosition() + StreetLamp->getLightPos()));
+
+        }
 
 
     }

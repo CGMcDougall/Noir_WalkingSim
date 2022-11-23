@@ -35,6 +35,9 @@ namespace game {
             GLuint texture_;
             GLuint depth_buffer_;
 
+            std::vector<glm::vec3> lightSource;
+            std::vector<glm::vec3> directionalLightSource;
+
         public:
             // Constructor and destructor
             SceneGraph(void);
@@ -75,10 +78,6 @@ namespace game {
 
             // Adds a directional light (cone light)
             void AddDirectionalLight(glm::vec3 lightPos);
-            
-    private:
-            std::vector<glm::vec3> lightSource;
-
 
     }; // class SceneGraph
 

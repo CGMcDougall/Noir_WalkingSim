@@ -5,14 +5,12 @@
 // Attributes passed from the vertex shader
 in vec3 position_interp;
 in vec3 normal_interp;
-in vec3 light_pos;
 in vec2 vertex_uv;
+in vec3 lamp_light_interp[1];
 
 // Uniform (global) buffer
 uniform sampler2D texture_map;
 vec3 lightSources[5];
-uniform vec3 lampLightPos[1];
-
 
 // General constants
 float pi = 3.1415926535897932;
@@ -46,7 +44,7 @@ vec3 lightCalc(vec3 lightPos){
     vec3 downVector = vec3(0,-1,0);
     float theta = dot(L, normalize(-downVector));
 
-    if (theta > cos(radians(15.0f))) {
+    if (theta > cos(radians(60.0f))) {
         //V = (eye_position - position_interp);
         V = - position_interp; // Eye position is (0, 0, 0) in view coordinates
         V = normalize(V);
@@ -77,9 +75,11 @@ vec3 lightCalc(vec3 lightPos){
         // Microfacet term: assume implicit geometry function
         vec3 mfacet = fresnel * (ndist / 4.0);
 
-        // Full illumination
-        illum = ambient_color + (diffuse + mfacet)*light_intensity*NL;        
+        float epsilon = (cos(radians(30.0f)) - cos(radians(60.0f)));
+        float intensity = clamp((theta - cos(radians(60.0f))) / epsilon, 0.0, 3.0);
 
+        // Full illumination
+        illum = ambient_color + (diffuse + mfacet)*intensity*NL;        
 
     } else {
         illum = ambient_color;
@@ -92,11 +92,11 @@ vec3 lightCalc(vec3 lightPos){
 void main() 
 {
 
-    /*
+    
     vec3 illum = vec3(0,0,0);
     vec4 pixel = texture(texture_map, vertex_uv);
 
-    for(int i = 0; i < 1; i++)illum += lightCalc(vec3(0.5,10,10));
+    for(int i = 0; i < lamp_light_interp.length(); i++)illum += lightCalc(lamp_light_interp[i]);
 
     // How "grey" it is
     float greyFactor = 1.0;
@@ -104,39 +104,7 @@ void main()
     // Modify the texture lookups to be greyer
     float grey = 0.21 * pixel.r + 0.71 * pixel.g + 0.07 * pixel.b;
     gl_FragColor = vec4(pixel.rgb * (1.0 - greyFactor) + (grey * greyFactor), pixel.a) * vec4(illum, 1.0);
-    */
-
-
-    // ambient
-    vec3 ambient = ambient_color * texture(texture_map, vertex_uv).rgb;
     
-    // diffuse 
-    vec3 norm = normalize(normal_interp);
-    vec3 lightDir = normalize(vec3(0.5, 5, 10) - position_interp);
-    float diff = max(dot(norm, lightDir), 0.0);
-    vec3 diffuse = diffuse_color * diff * texture(texture_map, vertex_uv).rgb;  
-    
-    // specular
-    vec3 viewDir = normalize(-position_interp);
-    vec3 reflectDir = reflect(-lightDir, norm);
-    float spec = pow(max(dot(viewDir, reflectDir), 0.0), 1/roughness);
-    vec3 specular = specular_color * spec * texture(texture_map, vertex_uv).rgb;  
-    
-    // spotlight (soft edges)
-    float theta = dot(lightDir, normalize(-vec3(0, -1, 0))); 
-    float epsilon = (cos(radians(12.5f)) - cos(radians(17.5f)));
-    float intensity = clamp((theta - cos(radians(17.5f))) / epsilon, 0.0, 1.0);
-    diffuse  *= light_intensity;
-    specular *= light_intensity;
-        
-    vec3 result = ambient + diffuse + specular;
-
-    if (theta > cos(radians(70.5f))) {
-        gl_FragColor = vec4(result, 1.0);
-    } else {
-        gl_FragColor = vec4(ambient, 1.0);
-    }
-
 }
 
 
