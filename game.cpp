@@ -471,7 +471,7 @@ void Game::CreateRoad(int num_roads) {
         std::string roadname = "RoadInstance" + index;
 
         // Create asteroid instance
-        game::SceneNode* Road = CreateInstance(roadname, "Rd1", "Noir","RockyTexture");
+        game::SceneNode* Road = CreateInstance(roadname, "Rd1", "Noir");
         
         if (even) {
             
@@ -529,9 +529,9 @@ void Game::CreateRoad(int num_roads) {
             CentralBuilding->SetPosition(glm::vec3(0,-1.5, - i * 113));
             CentralBuilding->Scale(glm::vec3(1,1,1)*0.5f);
             
-            game::SceneNode* Road2 = CreateInstance("landing1", "Rd1", "Noir", "RockyTexture");
-            game::SceneNode* Road3 = CreateInstance("landing2", "Rd1", "Noir", "RockyTexture");
-            game::SceneNode* Road4 = CreateInstance("landing3", "Rd1", "Noir", "RockyTexture");
+            game::SceneNode* Road2 = CreateInstance("landing1", "Rd1", "Noir", "");
+            game::SceneNode* Road3 = CreateInstance("landing2", "Rd1", "Noir", "");
+            game::SceneNode* Road4 = CreateInstance("landing3", "Rd1", "Noir", "");
             
             Road2->SetPosition(glm::vec3(48,-1, -i * 70));
             Road2->Rotate(glm::quat(1,glm::vec3(0,1,0)));
