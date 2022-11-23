@@ -3,6 +3,7 @@
 
 #include <exception>
 #include <string>
+#include <vector>
 #define GLEW_STATIC
 #include <GL/glew.h>
 #include <GLFW/glfw3.h>
@@ -48,6 +49,7 @@ namespace game {
 
             // Scene graph containing all nodes to render
             SceneGraph scene_;
+            std::vector<Streetlamp*> streetlamps_;
 
             // Resources available to the game
             ResourceManager resman_;

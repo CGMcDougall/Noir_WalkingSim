@@ -61,6 +61,7 @@ namespace game {
 
             void setLightSources(std::vector<glm::vec3> li);
 
+            void AddDirectionalLight(glm::vec3 li) { lampLightPos.push_back(li); };
 
         private:
             std::string name_; // Name of the scene node
@@ -79,6 +80,9 @@ namespace game {
 
             //list of lightSources
             std::vector<glm::vec3> lightSource;
+
+            // List of focal light source positions
+            std::vector<glm::vec3> lampLightPos;
 
     }; // class SceneNode
 

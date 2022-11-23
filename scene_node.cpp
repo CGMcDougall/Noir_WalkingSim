@@ -218,6 +218,15 @@ void SceneNode::SetupShader(GLuint program){
         glUniform3f(sources, li.x, li.y, li.z);
     }
     
+    float lampP[3];
+    for (int i = 0; i < lampLightPos.size(); i++) {
+        lampP[i*3] = lampLightPos.at(i).x;
+        lampP[i*3+1] = lampLightPos.at(i).y;
+        lampP[i*3+2] = lampLightPos.at(i).z;
+    }
+    GLint lampLightPositions = glGetUniformLocation(program, "lampLightPos[1]");
+    glUniform3fv(lampLightPositions, lampLightPos.size(), lampP);
+
 
     // World transformation
     glm::mat4 scaling = glm::scale(glm::mat4(1.0), scale_);

@@ -72,6 +72,9 @@ namespace game {
 
             //add Light source to list of light sources or change lightsource at index i. Index 0 is always player position
             void AddLightSource(glm::vec3 l,int i = -1);
+
+            // Adds a directional light (cone light)
+            void AddDirectionalLight(glm::vec3 lightPos);
             
     private:
             std::vector<glm::vec3> lightSource;

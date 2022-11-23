@@ -122,8 +122,11 @@ void Game::SetupResources(void){
     std::string filename = std::string(MATERIAL_DIRECTORY) + std::string("\\particle");
     resman_.LoadResource(Material, "ParticleMaterial", filename.c_str());
 
-   filename = std::string(MATERIAL_DIRECTORY) + std::string("\\noir");
+    filename = std::string(MATERIAL_DIRECTORY) + std::string("\\noir");
     resman_.LoadResource(Material, "Noir", filename.c_str());
+
+    filename = std::string(MATERIAL_DIRECTORY) + std::string("\\road_noir");
+    resman_.LoadResource(Material, "RoadNoir", filename.c_str());
 
     filename = std::string(MATERIAL_DIRECTORY) + std::string("\\metal");
     resman_.LoadResource(Material, "Metal", filename.c_str());
@@ -226,7 +229,7 @@ void Game::MainLoop(void){
         //n->SetPosition(glm::vec3(0, 3, 0));
 
         //scene_.AddLightSource(camera_.GetPosition(), 0);
-
+        
         // Draw the scene
         scene_.Draw(&camera_);
 
@@ -446,6 +449,7 @@ Streetlamp* Game::CreateStreetlampInstance(std::string entity_name, std::string 
     // Create streetlamp instance
     Streetlamp* streetlamp = new Streetlamp(entity_name, geom, mat);
     scene_.AddNode(streetlamp);
+    streetlamps_.push_back(streetlamp);
     return streetlamp;
 
 }
@@ -489,6 +493,7 @@ void Game::CreateRoad(int num_roads) {
                 left = true;
             }
 
+            scene_.AddDirectionalLight(StreetLamp->GetPosition() + StreetLamp->getLightPos());
             
         }
            

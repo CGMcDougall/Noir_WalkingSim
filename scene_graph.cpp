@@ -269,7 +269,13 @@ void SceneGraph::AddLightSource(glm::vec3 li, int i) {
     }
 }
 
+void SceneGraph::AddDirectionalLight(glm::vec3 li) {
+    for (int i = 0; i < node_.size(); i++) {
+        SceneNode* n = node_.at(i);
+        n->AddDirectionalLight(li);
+    }
 
+}
 
 
 } // namespace game
