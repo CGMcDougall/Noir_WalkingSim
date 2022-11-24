@@ -208,7 +208,7 @@ void Game::SetupResources(void){
     // Create particles for explosion
     //resman_.CreateSphereParticles("SphereParticles");
     
-    resman_.CreateSmokeParticles("SmokeParticles");
+    //resman_.CreateSmokeParticles("SmokeParticles");
     
 }
 
@@ -237,10 +237,10 @@ void Game::SetupScene(void){
     Building2->SetPosition(glm::vec3(-20, 0, -20));
     Building2->SetScale(glm::vec3(1, 1, 1)*8.0f);*/
 
-    game::SceneNode* smoke1 = CreateInstance("Smoke1", "SmokeParticles", "Cigarette", "SmokeText");
-    smoke1->SetPosition(glm::vec3(-1, 0, 0));
+    //game::SceneNode* smoke1 = CreateInstance("Smoke1", "SmokeParticles", "Cigarette", "SmokeText");
+    //smoke1->SetPosition(glm::vec3(-1, 0, 0));
 
-    //CreateRoad(2);
+    CreateRoad(2);
 
 }
 
@@ -481,10 +481,10 @@ Streetlamp* Game::CreateStreetlampInstance(std::string entity_name, std::string 
     }
 
     // Create streetlamp instance
-   /* Streetlamp* streetlamp = new Streetlamp(entity_name, geom, mat);
+    Streetlamp* streetlamp = new Streetlamp(entity_name, geom, mat);
     scene_.AddNode(streetlamp);
     streetlamps_.push_back(streetlamp);
-    return streetlamp;*/
+    return streetlamp;
 
 }
 
