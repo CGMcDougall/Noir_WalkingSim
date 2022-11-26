@@ -943,5 +943,73 @@ void ResourceManager::CreateSmokeParticles(std::string object_name, int num_part
     AddResource(PointSet, object_name, vbo, 0, num_particles);
 }
 
+void ResourceManager::CreateRainParticles(std::string object_name, int num_particles) {
+
+    // Create a set of points which will be the particles
+    // Similar to constant rain, but falling slower and along a spiral downwards path
+
+    // Data buffer
+    GLfloat* particle = NULL;
+
+    // Number of attributes per particle: position (3), normal (3), and color (3), texture coordinates (2)
+    const int particle_att = 11;
+
+    // Allocate memory for buffer
+    try {
+        particle = new GLfloat[num_particles * particle_att];
+    }
+    catch (std::exception& e) {
+        throw e;
+    }
+
+    // Variables for circular random distribution
+    float circleRadius = 15;
+    float circleX = 0;
+    float circleZ = 0;
+    float alpha;
+
+    // Variables to hold a particle's position
+    float radius;
+    float particleX;
+    float particleY = 50;
+    float particleZ;
+
+    for (int i = 0; i < num_particles; i++) {
+
+        // A random angle
+        alpha = 2 * glm::pi<float>() * ((double)rand() / (RAND_MAX));
+        // A random radius
+        radius = circleRadius * glm::sqrt((double)rand() / (RAND_MAX));
+
+        particleX = radius * glm::cos(alpha) + circleX;
+        particleZ = radius * glm::sin(alpha) + circleZ;
+
+        // Normal holds additional values for speedOffset, timeOffset, and spiral radius to make the particles more natural
+        glm::vec3 normal(((double)rand() / (RAND_MAX)+1), ((double)rand() / (RAND_MAX)), ((double)rand() / (RAND_MAX)));
+        glm::vec3 position(particleX, particleY, particleZ);
+        glm::vec3 color(i / (float)num_particles, 0.0, 1.0 - (i / (float)num_particles)); // We can use the color for debug, if needed
+
+        // Add vectors to the data buffer
+        for (int k = 0; k < 3; k++) {
+            particle[i * particle_att + k] = position[k];
+            particle[i * particle_att + k + 3] = normal[k];
+            particle[i * particle_att + k + 6] = color[k];
+        }
+    }
+
+    // Create OpenGL buffer and copy data
+    GLuint vbo;
+    glGenBuffers(1, &vbo);
+    glBindBuffer(GL_ARRAY_BUFFER, vbo);
+    glBufferData(GL_ARRAY_BUFFER, num_particles * particle_att * sizeof(GLfloat), particle, GL_STATIC_DRAW);
+
+    // Free data buffers
+    delete[] particle;
+
+    // Create resource
+    AddResource(PointSet, object_name, vbo, 0, num_particles);
+
+
+}
 
 } // namespace game;

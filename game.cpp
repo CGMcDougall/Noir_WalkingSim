@@ -124,51 +124,54 @@ void Game::InitEventHandlers(void){
 
 void Game::SetupResources(void){
 
-    // Load material to be applied to particles
+    // Particle Shaders
     std::string filename = std::string(MATERIAL_DIRECTORY) + std::string("\\particle");
     resman_.LoadResource(Material, "ParticleMaterial", filename.c_str());
 
+    filename = std::string(MATERIAL_DIRECTORY) + std::string("\\rain_particles");
+    resman_.LoadResource(Material, "RainMaterial", filename.c_str());
+
+
+    // Material Shaders
     filename = std::string(MATERIAL_DIRECTORY) + std::string("\\noir");
     resman_.LoadResource(Material, "Noir", filename.c_str());
 
     filename = std::string(MATERIAL_DIRECTORY) + std::string("\\road_noir");
     resman_.LoadResource(Material, "RoadNoir", filename.c_str());
 
-    filename = std::string(MATERIAL_DIRECTORY) + std::string("/cigarette");
+    filename = std::string(MATERIAL_DIRECTORY) + std::string("\\cigarette");
     resman_.LoadResource(Material, "Cigarette", filename.c_str());
 
     filename = std::string(MATERIAL_DIRECTORY) + std::string("\\metal");
     resman_.LoadResource(Material, "Metal", filename.c_str());
 
+
+    // Environment Objects
     filename = std::string(MATERIAL_DIRECTORY) + std::string("\\Assets/StraightRoad1.obj");
     resman_.LoadResource(Mesh, "Rd1", filename.c_str());
   
-
-   /* filename = std::string(MATERIAL_DIRECTORY) + std::string("\\Assets/Building.obj");
-    resman_.LoadResource(Mesh, "Building2", filename.c_str());*/
-    
     filename = std::string(MATERIAL_DIRECTORY) + std::string("\\Assets/Car2.obj");
     resman_.LoadResource(Mesh, "car", filename.c_str());
 
     filename = std::string(MATERIAL_DIRECTORY) + std::string("\\Assets/Street_Lamp_TS.obj");
     resman_.LoadResource(Mesh, "streetlamp", filename.c_str());
 
-    filename = std::string(MATERIAL_DIRECTORY) + std::string("\\Assets/Building1.obj");
-    resman_.LoadResource(Mesh, "OldHouse", filename.c_str());
-
-
-    filename = std::string(MATERIAL_DIRECTORY) + std::string("\\Assets/Buildings/CentralBuilding.obj");
-    resman_.LoadResource(Mesh, "centralBuilding", filename.c_str());
-
     filename = std::string(MATERIAL_DIRECTORY) + std::string("\\Assets/Grate/GrateModel.obj");
     resman_.LoadResource(Mesh, "Grate", filename.c_str());
     
+    /* filename = std::string(MATERIAL_DIRECTORY) + std::string("\\Assets/TrafficLight/Traffic_Lights.obj");
+    resman_.LoadResource(Mesh, "TrafficLight", filename.c_str());*/
+
+    // Misc Objects
     filename = std::string(MATERIAL_DIRECTORY) + std::string("\\Assets/Cig/Cig.obj");
     resman_.LoadResource(Mesh, "Cig", filename.c_str());
 
-   /* filename = std::string(MATERIAL_DIRECTORY) + std::string("\\Assets/TrafficLight/Traffic_Lights.obj");
-    resman_.LoadResource(Mesh, "TrafficLight", filename.c_str());*/
+    // Building Objects
+   /* filename = std::string(MATERIAL_DIRECTORY) + std::string("\\Assets/Building.obj");
+    resman_.LoadResource(Mesh, "Building2", filename.c_str());*/
 
+    filename = std::string(MATERIAL_DIRECTORY) + std::string("\\Assets/Building1.obj");
+    resman_.LoadResource(Mesh, "OldHouse", filename.c_str());
 
     filename = std::string(MATERIAL_DIRECTORY) + std::string("\\Assets/Buildings/Building2.obj");
     resman_.LoadResource(Mesh, "B2", filename.c_str());
@@ -176,6 +179,11 @@ void Game::SetupResources(void){
     filename = std::string(MATERIAL_DIRECTORY) + std::string("\\Assets/Buildings/Building3.obj");
     resman_.LoadResource(Mesh, "B3", filename.c_str());
 
+    filename = std::string(MATERIAL_DIRECTORY) + std::string("\\Assets/Buildings/CentralBuilding.obj");
+    resman_.LoadResource(Mesh, "centralBuilding", filename.c_str());
+
+
+    // Textures
     filename = std::string(MATERIAL_DIRECTORY) + std::string("\\Assets/rocky.png");
     resman_.LoadResource(Texture, "RockyTexture", filename.c_str());
 
@@ -194,19 +202,15 @@ void Game::SetupResources(void){
     filename = std::string(MATERIAL_DIRECTORY) + std::string("\\Assets/GreenTempText.png");
     resman_.LoadResource(Texture, "GreenTexture", filename.c_str());
 
-
-
   /*  filename = std::string(MATERIAL_DIRECTORY) + std::string("\\Assets/Body_Metallic1.png");
     resman_.LoadResource(Texture, "Car1Text", filename.c_str());*/
-
-
 
     /*filename = std::string(MATERIAL_DIRECTORY) + std::string("\\Assets/BrickBuildText.png");
     resman_.LoadResource(Texture, "BrickText", filename.c_str());*/
 
 
-    // Create particles for explosion
-    //resman_.CreateSphereParticles("SphereParticles");
+    // Create particles
+    resman_.CreateRainParticles("RainParticles");
     
     //resman_.CreateSmokeParticles("SmokeParticles");
     
@@ -219,7 +223,7 @@ void Game::SetupScene(void){
     scene_.SetBackgroundColor(viewport_background_color_g);
 
     // Create particles
-    //game::SceneNode *particles = CreateInstance("ParticleInstance1", "SphereParticles", "ParticleMaterial");
+    game::SceneNode *particles = CreateInstance("RainInstance", "RainParticles", "RainMaterial");
     //game::SceneNode *Car = CreateInstance("Car1", "car", "Noir");
     //Car->SetScale(glm::vec3(0.2, 0.2, 0.2));
 
@@ -250,7 +254,8 @@ void Game::MainLoop(void){
     // Loop while the user did not close the window
     while (!glfwWindowShouldClose(window_)){
 
-        //SceneNode* n = scene_.GetNode("Car1");
+        SceneNode* n = scene_.GetNode("RainInstance");
+        n->SetPosition(camera_.GetPosition());
         ////if (n != NULL)std::cout << "LOADED AND HERE" << std::endl;
         ////else std::cout << "dumb ass, maybe get it to work"<< std::endl;
         //n->SetPosition(glm::vec3(0, 0, 0));

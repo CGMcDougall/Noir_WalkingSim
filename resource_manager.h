@@ -39,8 +39,11 @@ namespace game {
             void CreateWall(std::string object_name);
             // Create particles distributed over a sphere
             void CreateSphereParticles(std::string object_name, int num_particles = 20000);
-            //Creates smoke particles for simulated cigarette smoke
+            // Creates smoke particles for simulated cigarette smoke
             void CreateSmokeParticles(std::string obj_name, int num_particles = 4000);
+            // Creates rain particles
+            void CreateRainParticles(std::string obj_name, int num_particles = 3000);
+
 
         private:
             // List storing all resources
