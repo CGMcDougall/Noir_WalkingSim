@@ -27,8 +27,6 @@ void main()
     float circtime = timer * speedOffset + timeOffset - 5.0 * floor(timer*speedOffset / 5);
     float t = circtime; // Our time parameter
     
-    // Radius of the spiral path
-    float radius = normal.z;
 
     // Constant used in determining the falling speed coefficient
     float a = 10.0;

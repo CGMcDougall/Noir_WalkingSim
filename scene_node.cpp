@@ -26,6 +26,8 @@ SceneNode::SceneNode(const std::string name, const Resource *geometry, const Res
     array_buffer_ = geometry->GetArrayBuffer();
     element_array_buffer_ = geometry->GetElementArrayBuffer();
     size_ = geometry->GetSize();
+    transf_ = glm::mat4(1.0);
+    parent_ = NULL;
 
     // Set material (shader program)
     if (material->GetType() != Material){
@@ -73,6 +75,13 @@ glm::vec3 SceneNode::GetScale(void) const {
     return scale_;
 }
 
+glm::mat4 SceneNode::GetMatrix(void) const {
+    return transf_;
+}
+
+glm::vec3 SceneNode::GetUp(void) const {
+    return up_;
+}
 
 void SceneNode::SetPosition(glm::vec3 position){
 
@@ -91,6 +100,22 @@ void SceneNode::SetScale(glm::vec3 scale){
     scale_ = scale;
 }
 
+void SceneNode::SetUp(glm::vec3 up) {
+    up_ = up;
+}
+
+void SceneNode::AddChild(SceneNode* child) {
+    children_.push_back(child);
+}
+
+
+void SceneNode::SetParent(SceneNode* parent) {
+    parent_ = parent;
+}
+
+SceneNode* SceneNode::GetParent() {
+    return parent_;
+}
 
 void SceneNode::Translate(glm::vec3 trans){
 
@@ -110,6 +135,15 @@ void SceneNode::Scale(glm::vec3 scale){
     scale_ *= scale;
 }
 
+void SceneNode::Orbit(glm::vec3 pos, glm::quat orb) {
+    orbit_position_ = pos;
+    orbit_rotation_ *= orb;
+    orbit_rotation_ = glm::normalize(orbit_rotation_);
+}
+
+glm::quat SceneNode::GetOrbitRotation() const {
+    return orbit_rotation_;
+}
 
 GLenum SceneNode::GetMode(void) const {
 
@@ -228,18 +262,24 @@ void SceneNode::SetupShader(GLuint program){
     GLint lampLightPositions = glGetUniformLocation(program, "lampLightPos");
     glUniform3fv(lampLightPositions, lampLightPos.size(), lampP);
 
+    // Parent transformation
+    glm::mat4 parent_transforms = glm::mat4(1.0);
+    if (parent_ != NULL) {
+        parent_transforms = parent_->GetMatrix();
+    }
 
     // World transformation
     glm::mat4 scaling = glm::scale(glm::mat4(1.0), scale_);
     glm::mat4 rotation = glm::mat4_cast(orientation_);
     glm::mat4 translation = glm::translate(glm::mat4(1.0), position_);
-    glm::mat4 transf = translation * rotation * scaling;
+    glm::mat4 orbit = glm::translate(glm::mat4(1.0), -orbit_position_) * glm::mat4_cast(orbit_rotation_) * glm::translate(glm::mat4(1.0), orbit_position_);
+    transf_ = parent_transforms * translation * orbit * rotation * scaling; // why this sequence?
 
     GLint world_mat = glGetUniformLocation(program, "world_mat");
-    glUniformMatrix4fv(world_mat, 1, GL_FALSE, glm::value_ptr(transf));
+    glUniformMatrix4fv(world_mat, 1, GL_FALSE, glm::value_ptr(transf_));
 
     // Normal matrix
-    glm::mat4 normal_matrix = glm::transpose(glm::inverse(transf));
+    glm::mat4 normal_matrix = glm::transpose(glm::inverse(transf_));
     GLint normal_mat = glGetUniformLocation(program, "normal_mat");
     glUniformMatrix4fv(normal_mat, 1, GL_FALSE, glm::value_ptr(normal_matrix));
 

@@ -162,9 +162,13 @@ void Game::SetupResources(void){
     /* filename = std::string(MATERIAL_DIRECTORY) + std::string("\\Assets/TrafficLight/Traffic_Lights.obj");
     resman_.LoadResource(Mesh, "TrafficLight", filename.c_str());*/
 
+    resman_.CreateCylinder("BranchCylinder", BRANCH_LENGTH, 1.0, 10, 10);
+
+
     // Misc Objects
     filename = std::string(MATERIAL_DIRECTORY) + std::string("\\Assets/Cig/Cig.obj");
     resman_.LoadResource(Mesh, "Cig", filename.c_str());
+
 
     // Building Objects
    /* filename = std::string(MATERIAL_DIRECTORY) + std::string("\\Assets/Building.obj");
@@ -186,6 +190,9 @@ void Game::SetupResources(void){
     // Textures
     filename = std::string(MATERIAL_DIRECTORY) + std::string("\\Assets/rocky.png");
     resman_.LoadResource(Texture, "RockyTexture", filename.c_str());
+
+    filename = std::string(MATERIAL_DIRECTORY) + std::string("\\Assets/barkTexture.png");
+    resman_.LoadResource(Texture, "BarkTexture", filename.c_str());
 
     filename = std::string(MATERIAL_DIRECTORY) + std::string("\\Assets/RedTempText.png");
     resman_.LoadResource(Texture, "RedTexture", filename.c_str());
@@ -221,6 +228,8 @@ void Game::SetupScene(void){
 
     // Set background color for the scene
     scene_.SetBackgroundColor(viewport_background_color_g);
+
+    CreateTree(3, glm::vec3(0, 2.5, 0));
 
     // Create particles
     game::SceneNode *particles = CreateInstance("RainInstance", "RainParticles", "RainMaterial");
@@ -269,6 +278,15 @@ void Game::MainLoop(void){
 
         //scene_.AddLightSource(camera_.GetPosition(), 0);
         
+        if (animating_) {
+            static double last_time = 0;
+            double current_time = glfwGetTime();
+            if ((current_time - last_time) > 0.05) {
+                scene_.Update();
+                last_time = current_time;
+            }
+        }
+
         // Draw the scene
         scene_.Draw(&camera_);
 
@@ -317,15 +335,9 @@ void Game::CursorCallback(GLFWwindow* window, double xPos, double yPos) {
     if (xCord > 0) {
         game->camera_.Yaw(-rot_factor * mag);
     }
-
-    
-
     glfwSetCursorPos(window, 0, 0);
     
 }
-
-
-
 
 void Game::KeyCallback(GLFWwindow* window, int key, int scancode, int action, int mods){
 
@@ -344,10 +356,8 @@ void Game::KeyCallback(GLFWwindow* window, int key, int scancode, int action, in
         game->animating_ = (game->animating_ == true) ? false : true;
     }
 
-
     glm::vec3 forwardVec = game->camera_.GetForward();
     forwardVec = glm::vec3(forwardVec.x, forwardVec.y, forwardVec.z);
-    
 
     // View control
     float rot_factor(glm::pi<float>() / 180);
@@ -421,48 +431,6 @@ void Game::ResizeCallback(GLFWwindow* window, int width, int height){
 Game::~Game(){
     
     glfwTerminate();
-}
-
-
-Asteroid *Game::CreateAsteroidInstance(std::string entity_name, std::string object_name, std::string material_name){
-
-    // Get resources
-    Resource *geom = resman_.GetResource(object_name);
-    if (!geom){
-        throw(GameException(std::string("Could not find resource \"")+object_name+std::string("\"")));
-    }
-
-    Resource *mat = resman_.GetResource(material_name);
-    if (!mat){
-        throw(GameException(std::string("Could not find resource \"")+material_name+std::string("\"")));
-    }
-
-    // Create asteroid instance
-    Asteroid *ast = new Asteroid(entity_name, geom, mat);
-    scene_.AddNode(ast);
-    return ast;
-}
-
-
-void Game::CreateAsteroidField(int num_asteroids){
-
-    // Create a number of asteroid instances
-    for (int i = 0; i < num_asteroids; i++){
-        // Create instance name
-        std::stringstream ss;
-        ss << i;
-        std::string index = ss.str();
-        std::string name = "AsteroidInstance" + index;
-
-        // Create asteroid instance
-        Asteroid *ast = CreateAsteroidInstance(name, "SimpleSphereMesh", "ObjectMaterial");
-
-        // Set attributes of asteroid: random position, orientation, and
-        // angular momentum
-        ast->SetPosition(glm::vec3(-300.0 + 600.0*((float) rand() / RAND_MAX), -300.0 + 600.0*((float) rand() / RAND_MAX), 600.0*((float) rand() / RAND_MAX)));
-        ast->SetOrientation(glm::normalize(glm::angleAxis(glm::pi<float>()*((float) rand() / RAND_MAX), glm::vec3(((float) rand() / RAND_MAX), ((float) rand() / RAND_MAX), ((float) rand() / RAND_MAX)))));
-        ast->SetAngM(glm::normalize(glm::angleAxis(0.05f*glm::pi<float>()*((float) rand() / RAND_MAX), glm::vec3(((float) rand() / RAND_MAX), ((float) rand() / RAND_MAX), ((float) rand() / RAND_MAX)))));
-    }
 }
 
 Streetlamp* Game::CreateStreetlampInstance(std::string entity_name, std::string object_name, std::string material_name, std::string texture_name) {
@@ -584,6 +552,97 @@ void Game::CreateRoad(int num_roads) {
     }
 }
 
+Branch* Game::CreateBranchInstance(std::string entity_name, std::string object_name, std::string material_name, std::string texture_name, Branch* parent_branch, int depth, int id_in_set, int branch_per_level) {
+    // Get resources
+    Resource* geom = resman_.GetResource(object_name);
+    if (!geom) {
+        throw(GameException(std::string("Could not find resource \"") + object_name + std::string("\"")));
+    }
+
+    Resource* mat = resman_.GetResource(material_name);
+    if (!mat) {
+        throw(GameException(std::string("Could not find resource \"") + material_name + std::string("\"")));
+    }
+
+    Resource* tex = NULL;
+    if (texture_name != "") {
+        tex = resman_.GetResource(texture_name);
+        if (!tex) {
+            throw(GameException(std::string("Could not find resource \"") + texture_name + std::string("\"")));
+        }
+    }
+
+    // Create branch instance
+    Branch* branch = new Branch(entity_name, geom, mat, tex);
+
+    // Set relations
+    branch->SetParent(parent_branch);
+
+    // For most branches (not the trunk), set up the patterned attributes
+    if (parent_branch != NULL) {
+        parent_branch->AddChild(branch);
+        glm::vec3 p_scale = parent_branch->GetScale();
+        glm::vec3 scale = glm::vec3(p_scale.x*0.75, p_scale.y*0.9, p_scale.z*0.75); // I wanted the branches to stay long
+        branch->SetPosition(glm::vec3(scale.x * -BRANCH_LENGTH/2.5, (BRANCH_LENGTH/1.6), 0));
+        branch->SetScale(scale);
+        branch->Rotate(glm::quat(1, 0, 0, glm::half_pi<float>() * 0.2)); // Rotate a bit outwards
+        glm::quat ang_m = glm::normalize(glm::angleAxis(id_in_set * 2 * glm::pi<float>() / branch_per_level, glm::vec3(0, 1, 0))); // Branches are evenly spaced
+        branch->Orbit(glm::vec3(scale.x * -BRANCH_LENGTH/2.5, 0, 0), ang_m);
+    }
+    branch->SetDepth(depth); // For different ranges of sway depending on size of branch
+
+    scene_.AddNode(branch);
+    return branch;
+}
+
+void Game::CreateTree(int branch_per_level, glm::vec3 position) {
+    std::stringstream ss;
+    ss << 0;
+    std::string index = ss.str();
+    std::string name = "BranchInstance" + index;
+    ss.clear();
+
+    // Create branch instance
+    Branch* trunk = CreateBranchInstance(name, "BranchCylinder", "RoadNoir", "BarkTexture", NULL, 0, 0, 0);
+    // Trunk is a special branch which has its parameters 
+    trunk->SetPosition(position);
+    trunk->SetOrientation(glm::quat(0, glm::vec3(0.0, 1.0, 0.0)));
+    trunk->SetUp(glm::vec3(0.0, 1.0, 0.0));
+    for (int i = 0; i < branch_per_level; i++) {
+
+        // Setup naming convention depth+index
+        ss << 1 << i;
+        name = "BranchInstance" + index;
+        ss.clear();
+
+        // Create and set up new branch.
+        Branch* new_branch = CreateBranchInstance(name, "BranchCylinder", "RoadNoir", "BarkTexture", trunk, 1, i, branch_per_level);
+
+        // Track the parent for the next layer
+        Branch* depth1_branch = new_branch;
+
+        // Next two tiers do the same thing
+        for (int j = 0; j < branch_per_level; j++) {
+
+            ss << 2 << i;
+            name = "BranchInstance" + index;
+            ss.clear();
+
+            Branch* new_branch = CreateBranchInstance(name, "BranchCylinder", "RoadNoir", "BarkTexture", depth1_branch, 2, j, branch_per_level);
+
+            Branch* depth2_branch = new_branch;
+
+            for (int k = 0; k < branch_per_level; k++) {
+
+                ss << 3 << i;
+                name = "BranchInstance" + index;
+                ss.clear();
+
+                Branch* new_branch = CreateBranchInstance(name, "BranchCylinder", "RoadNoir", "BarkTexture", depth2_branch, 3, k, branch_per_level);
+            }
+        }
+    }
+}
 
 SceneNode *Game::CreateInstance(std::string entity_name, std::string object_name, std::string material_name, std::string texture_name){
 
@@ -601,7 +660,7 @@ SceneNode *Game::CreateInstance(std::string entity_name, std::string object_name
     if (texture_name != ""){
         tex = resman_.GetResource(texture_name);
         if (!tex){
-            throw(GameException(std::string("Could not find resource \"")+material_name+std::string("\"")));
+            throw(GameException(std::string("Could not find resource \"")+texture_name+std::string("\"")));
         }
     }
 
