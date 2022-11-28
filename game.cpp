@@ -4,6 +4,7 @@
 
 #include "game.h"
 #include "path_config.h"
+#include <random>
 
 namespace game {
 
@@ -162,7 +163,7 @@ void Game::SetupResources(void){
     /* filename = std::string(MATERIAL_DIRECTORY) + std::string("\\Assets/TrafficLight/Traffic_Lights.obj");
     resman_.LoadResource(Mesh, "TrafficLight", filename.c_str());*/
 
-    resman_.CreateCylinder("BranchCylinder", BRANCH_LENGTH, 1.0, 10, 10);
+    resman_.CreateCylinder("BranchCylinder", BRANCH_LENGTH, 0.4, 10, 10);
 
 
     // Misc Objects
@@ -586,7 +587,12 @@ Branch* Game::CreateBranchInstance(std::string entity_name, std::string object_n
         branch->SetPosition(glm::vec3(scale.x * -BRANCH_LENGTH/2.5, (BRANCH_LENGTH/1.6), 0));
         branch->SetScale(scale);
         branch->Rotate(glm::quat(1, 0, 0, glm::half_pi<float>() * 0.2)); // Rotate a bit outwards
-        glm::quat ang_m = glm::normalize(glm::angleAxis(id_in_set * 2 * glm::pi<float>() / branch_per_level, glm::vec3(0, 1, 0))); // Branches are evenly spaced
+
+        std::random_device rand;
+        std::mt19937 gen(rand());
+        std::uniform_int_distribution<> dist(-0.5, 0.5);
+
+        glm::quat ang_m = glm::normalize(glm::angleAxis(id_in_set * 2 * glm::pi<float>() / branch_per_level + dist(gen), glm::vec3(0, 1, 0))); // Branches are evenly spaced
         branch->Orbit(glm::vec3(scale.x * -BRANCH_LENGTH/2.5, 0, 0), ang_m);
     }
     branch->SetDepth(depth); // For different ranges of sway depending on size of branch
