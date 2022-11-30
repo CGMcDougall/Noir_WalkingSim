@@ -61,6 +61,9 @@ namespace game {
             // Flag to turn animation on/off
             bool animating_;
 
+            // Flag to turn visual blur on/off
+            bool blur_;
+
             // Methods to initialize the game
             void InitWindow(void);
             void InitView(void);

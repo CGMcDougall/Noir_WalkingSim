@@ -51,6 +51,7 @@ void Game::Init(void){
 
     // Set variables
     animating_ = true;
+    blur_ = false;
 }
 
        
@@ -217,9 +218,17 @@ void Game::SetupResources(void){
     resman_.LoadResource(Texture, "BrickText", filename.c_str());*/
 
 
+    // Load material for screen-space effect
+    filename = std::string(MATERIAL_DIRECTORY) + std::string("/screen_space");
+    resman_.LoadResource(Material, "ScreenSpaceMaterial", filename.c_str());
+
+
     // Create particles
     resman_.CreateRainParticles("RainParticles");
     
+    // Setup drawing to texture
+    scene_.SetupDrawToTexture();
+
     //resman_.CreateSmokeParticles("SmokeParticles");
     
 }
@@ -234,14 +243,10 @@ void Game::SetupScene(void){
 
     // Create particles
     game::SceneNode *particles = CreateInstance("RainInstance", "RainParticles", "RainMaterial");
+
+
     //game::SceneNode *Car = CreateInstance("Car1", "car", "Noir");
     //Car->SetScale(glm::vec3(0.2, 0.2, 0.2));
-
-    //game::SceneNode* Road = CreateInstance("Road1", "Rd1", "Noir");
-    ////Road->SetScale(glm::vec3(0.2, 0.2, 0.2));
-
-    //game::SceneNode* StreetLamp = CreateInstance("StreetLamp1", "streetlamp", "Noir", "RockyTexture");
-    //StreetLamp->SetScale(glm::vec3(10, 10, 10));
 
    /* game::SceneNode* Building = CreateInstance("one", "car", "Noir");
     Building->SetPosition(glm::vec3(20, 0, -20));
@@ -288,8 +293,25 @@ void Game::MainLoop(void){
             }
         }
 
-        // Draw the scene
-        scene_.Draw(&camera_);
+        if (blur_) {
+            // Draw the scene to a texture
+            scene_.DrawToTexture(&camera_);
+
+            // Save the texture to a file for debug
+            /*static int first = 1;
+            if (first){
+                scene_.SaveTexture("texture.ppm");
+                first = 0;
+            }*/
+
+            // Process the texture with a screen-space effect and display
+            // the texture
+            scene_.DisplayTexture(resman_.GetResource("ScreenSpaceMaterial")->GetResource());
+        }
+        else {
+            // Draw the scene
+            scene_.Draw(&camera_);
+        }
 
         // Push buffer drawn in the background onto the display
         glfwSwapBuffers(window_);
@@ -411,6 +433,9 @@ void Game::KeyCallback(GLFWwindow* window, int key, int scancode, int action, in
     }
     if (key == GLFW_KEY_D) {
         game->camera_.Translate(game->camera_.GetSide() * trans_factor);
+    }
+    if (key == GLFW_KEY_B) {
+        game->blur_ = !game->blur_;
     }
 
 
