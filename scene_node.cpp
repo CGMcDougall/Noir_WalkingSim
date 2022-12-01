@@ -278,8 +278,6 @@ void SceneNode::SetupShader(GLuint program){
     glm::vec3 toJoint = joint_ - position_;
     glm::mat4 joint = glm::translate(glm::mat4(1.0),toJoint) * rotation * scaling;
 
-    glm::mat4 orbit = glm::translate(glm::mat4(1.0), -toJoint) * glm::mat4_cast(orbit_) * glm::translate(glm::mat4(1.0), toJoint);
-    //orbit = -joint * glm::mat4_cast(orbit_) * joint;
 
     glm::mat4 transf = translation *orbit* rotation * scaling;
 
