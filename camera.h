@@ -5,6 +5,7 @@
 #include <GL/glew.h>
 #include <GLFW/glfw3.h>
 #include <glm/glm.hpp>
+//#include "cig.h"
 
 
 namespace game {
@@ -48,6 +49,8 @@ namespace game {
             // Set all camera-related variables in shader program
             void SetupShader(GLuint program);
 
+            //void giveCig(Cigarette *cig);
+
         private:
             glm::vec3 position_; // Position of camera
             glm::quat orientation_; // Orientation of camera
@@ -58,6 +61,7 @@ namespace game {
 
             glm::quat camera_orientation_;
 
+            //Cigarette *Cig = NULL;
             // Create view matrix from current camera parameters
             void SetupViewMatrix(void);
 

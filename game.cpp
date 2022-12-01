@@ -5,6 +5,7 @@
 #include "game.h"
 #include "path_config.h"
 
+
 namespace game {
 
 // Some configuration constants
@@ -34,6 +35,7 @@ glm::vec3 camera_up_g(0.0, 1.0, 0.0);
 // Materials 
 const std::string material_directory_g = MATERIAL_DIRECTORY;
 
+Cigarette *Game::Cig = NULL;
 
 Game::Game(void){
 
@@ -153,12 +155,12 @@ void Game::SetupResources(void){
     filename = std::string(MATERIAL_DIRECTORY) + std::string("\\Assets/Street_Lamp_TS.obj");
     resman_.LoadResource(Mesh, "streetlamp", filename.c_str());
 
-    filename = std::string(MATERIAL_DIRECTORY) + std::string("\\Assets/Building1.obj");
+   /* filename = std::string(MATERIAL_DIRECTORY) + std::string("\\Assets/Building1.obj");
     resman_.LoadResource(Mesh, "OldHouse", filename.c_str());
 
 
     filename = std::string(MATERIAL_DIRECTORY) + std::string("\\Assets/Buildings/CentralBuilding.obj");
-    resman_.LoadResource(Mesh, "centralBuilding", filename.c_str());
+    resman_.LoadResource(Mesh, "centralBuilding", filename.c_str());*/
 
     filename = std::string(MATERIAL_DIRECTORY) + std::string("\\Assets/Grate/GrateModel.obj");
     resman_.LoadResource(Mesh, "Grate", filename.c_str());
@@ -170,7 +172,7 @@ void Game::SetupResources(void){
     resman_.LoadResource(Mesh, "TrafficLight", filename.c_str());*/
 
 
-    filename = std::string(MATERIAL_DIRECTORY) + std::string("\\Assets/Buildings/Building2.obj");
+  /*  filename = std::string(MATERIAL_DIRECTORY) + std::string("\\Assets/Buildings/Building2.obj");
     resman_.LoadResource(Mesh, "B2", filename.c_str());
 
     filename = std::string(MATERIAL_DIRECTORY) + std::string("\\Assets/Buildings/Building3.obj");
@@ -183,7 +185,7 @@ void Game::SetupResources(void){
     resman_.LoadResource(Texture, "RedTexture", filename.c_str());
 
     filename = std::string(MATERIAL_DIRECTORY) + std::string("\\Assets/BlueTempText.png");
-    resman_.LoadResource(Texture, "BlueTexture", filename.c_str());
+    resman_.LoadResource(Texture, "BlueTexture", filename.c_str());*/
 
     filename = std::string(MATERIAL_DIRECTORY) + std::string("\\Assets/Cig/CigText.png");
     resman_.LoadResource(Texture, "CigText", filename.c_str());
@@ -208,7 +210,7 @@ void Game::SetupResources(void){
     // Create particles for explosion
     //resman_.CreateSphereParticles("SphereParticles");
     
-    //resman_.CreateSmokeParticles("SmokeParticles");
+    resman_.CreateSmokeParticles("SmokeParticles");
     
 }
 
@@ -240,7 +242,15 @@ void Game::SetupScene(void){
     //game::SceneNode* smoke1 = CreateInstance("Smoke1", "SmokeParticles", "Cigarette", "SmokeText");
     //smoke1->SetPosition(glm::vec3(-1, 0, 0));
 
-    CreateRoad(2);
+
+    game::Cigarette* cig = CreateCigaretteInstance("Cigarette", "Cig", "Noir", "CigText");
+    //cig->giveSmokeParticle(smoke1);
+    glm::vec3 pos = camera_.GetPosition();
+    cig->SetJoint(glm::vec3(pos.x + 0.1, pos.y - 0.1, pos.z - 0.7));
+    cig->SetPosition(glm::vec3(pos.x + 0.1, pos.y - 0.1, pos.z - 0.7));
+    Cig = cig;
+    //camera_.giveCig(cig);
+    //CreateRoad(2);
 
 }
 
@@ -250,7 +260,18 @@ void Game::MainLoop(void){
     // Loop while the user did not close the window
     while (!glfwWindowShouldClose(window_)){
 
-        //SceneNode* n = scene_.GetNode("Car1");
+        SceneNode* n = scene_.GetNode("Cigarette");
+        glm::vec3 pos = camera_.GetPosition();
+        pos = glm::vec3(pos.x + 0.1, pos.y - 0.1, pos.z - 0.7);
+        //n->SetPosition(pos);
+        //n->SetOrientation(camera_.GetOrientation());
+        //n->Rotate(camera_.GetOrientation());
+        Cigarette* c = (Cigarette*) n;
+        //c->Orbit(camera_.GetOrientation());
+        c->SetJoint(pos);
+        //c->SetJoint(camera_.GetPosition());
+        c->Update();
+
         ////if (n != NULL)std::cout << "LOADED AND HERE" << std::endl;
         ////else std::cout << "dumb ass, maybe get it to work"<< std::endl;
         //n->SetPosition(glm::vec3(0, 0, 0));
@@ -266,6 +287,7 @@ void Game::MainLoop(void){
         
         // Draw the scene
         scene_.Draw(&camera_);
+
 
         // Push buffer drawn in the background onto the display
         glfwSwapBuffers(window_);
@@ -299,9 +321,12 @@ void Game::CursorCallback(GLFWwindow* window, double xPos, double yPos) {
     //float yMag = glm::abs(yCord);
     float mag = 0.4;
 
+
+
     float trans_factor = 1.0;
     if (yCord < 0) {
         game->camera_.Pitch(rot_factor * mag);
+        
     }
     if (yCord > 0) {
         game->camera_.Pitch(-rot_factor * mag);
@@ -313,7 +338,9 @@ void Game::CursorCallback(GLFWwindow* window, double xPos, double yPos) {
         game->camera_.Yaw(-rot_factor * mag);
     }
 
+    //Cig->Orbit(game->camera_.GetOrientation());
     
+    //Cig->Rotate(game->camera_.GetOrientation());
 
     glfwSetCursorPos(window, 0, 0);
     
@@ -487,6 +514,55 @@ Streetlamp* Game::CreateStreetlampInstance(std::string entity_name, std::string 
     return streetlamp;
 
 }
+
+Cigarette* Game::CreateCigaretteInstance(std::string entity_name, std::string object_name, std::string material_name, std::string texture_name)
+{
+    // Get resources for Cigarette
+    Resource* geom = resman_.GetResource(object_name);
+    if (!geom) {
+        throw(GameException(std::string("Could not find resource \"") + object_name + std::string("\"")));
+    }
+
+    Resource* mat = resman_.GetResource(material_name);
+    if (!mat) {
+        throw(GameException(std::string("Could not find resource \"") + material_name + std::string("\"")));
+    }
+
+    Resource* tex = NULL;
+    if (texture_name != "") {
+        tex = resman_.GetResource(texture_name);
+        if (!tex) {
+            throw(GameException(std::string("Could not find resource \"") + material_name + std::string("\"")));
+        }
+    }
+    // Get resources for Smoke
+    Resource* sGeom = resman_.GetResource("SmokeParticles");
+    if (!geom) {
+        throw(GameException(std::string("Could not find resource \"") + object_name + std::string("\"")));
+    }
+
+    Resource* sMat = resman_.GetResource("Cigarette");
+    if (!mat) {
+        throw(GameException(std::string("Could not find resource \"") + material_name + std::string("\"")));
+    }
+
+    Resource* sTex = NULL;
+    if (texture_name != "") {
+        tex = resman_.GetResource("SmokeText");
+        if (!tex) {
+            throw(GameException(std::string("Could not find resource \"") + material_name + std::string("\"")));
+        }
+    }
+
+    SceneNode* smoke = new SceneNode("smoke",sGeom, sMat, sTex);
+
+    // Create streetlamp instance
+    Cigarette *cig = new Cigarette(entity_name, geom, mat,tex);
+    scene_.AddNode(cig);
+    cig->giveSmokeParticle(smoke);
+    return cig;
+}
+
 
 //makes a road that extends in the -z direction, with streetlights on rotating sides
 void Game::CreateRoad(int num_roads) {

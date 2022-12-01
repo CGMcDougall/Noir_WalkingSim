@@ -218,7 +218,7 @@ void SceneNode::SetupShader(GLuint program){
         glUniform3f(sources, li.x, li.y, li.z);
     }
     
-    float lampP[3];
+    float lampP[3] = {0,0,0};
     for (int i = 0; i < lampLightPos.size(); i++) {
         lampP[i*3] = lampLightPos.at(i).x;
         lampP[i*3+1] = lampLightPos.at(i).y;
@@ -233,7 +233,14 @@ void SceneNode::SetupShader(GLuint program){
     glm::mat4 scaling = glm::scale(glm::mat4(1.0), scale_);
     glm::mat4 rotation = glm::mat4_cast(orientation_);
     glm::mat4 translation = glm::translate(glm::mat4(1.0), position_);
-    glm::mat4 transf = translation * rotation * scaling;
+
+    glm::vec3 toJoint = joint_ - position_;
+    glm::mat4 joint = glm::translate(glm::mat4(1.0),toJoint) * rotation * scaling;
+
+    glm::mat4 orbit = glm::translate(glm::mat4(1.0), -toJoint) * glm::mat4_cast(orbit_) * glm::translate(glm::mat4(1.0), toJoint);
+    //orbit = -joint * glm::mat4_cast(orbit_) * joint;
+
+    glm::mat4 transf = translation *orbit* rotation * scaling;
 
     GLint world_mat = glGetUniformLocation(program, "world_mat");
     glUniformMatrix4fv(world_mat, 1, GL_FALSE, glm::value_ptr(transf));

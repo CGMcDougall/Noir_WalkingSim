@@ -16,6 +16,9 @@ Camera::Camera(void){
 Camera::~Camera(){
 }
 
+//void Camera::giveCig(Cigarette* c) {
+//    //Cig = c;
+//}
 
 glm::vec3 Camera::GetPosition(void) const {
 
@@ -51,6 +54,7 @@ void Camera::Rotate(glm::quat rot){
 
     orientation_ = rot * orientation_;
     orientation_ = glm::normalize(orientation_);
+    //Cig->Orbit(orientation_);
 }
 
 

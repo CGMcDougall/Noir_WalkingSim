@@ -13,6 +13,7 @@
 #include "camera.h"
 #include "asteroid.h"
 #include "streetlamp.h"
+#include "cig.h"
 
 namespace game {
 
@@ -80,6 +81,10 @@ namespace game {
             void CreateAsteroidField(int num_asteroids = 1500);
 
             Streetlamp* Game::CreateStreetlampInstance(std::string entity_name, std::string object_name, std::string material_name, std::string texture_name);
+
+            Cigarette* Game::CreateCigaretteInstance(std::string entity_name, std::string object_name, std::string material_name, std::string texture_name);
+            static Cigarette* Cig;
+
 
             void CreateRoad(int num_roads = 5);
 

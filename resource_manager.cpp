@@ -915,7 +915,7 @@ void ResourceManager::CreateSmokeParticles(std::string object_name, int num_part
 
         // Define the normal and point based on theta, phi and the spray; normal will be used as velocity
         glm::vec3 normal(spray * cos(theta) * sin(phi), -glm::abs(tan(w)), spray * cos(phi));
-        glm::vec3 position(normal.x * trad, 0, normal.z * trad);
+        glm::vec3 position(distr/21, 0, normal.z * trad);
         glm::vec3 color(time, distr, 1.0 - (i / (float)num_particles)); // We can use the color for debug, if needed
 
         // Add vectors to the data buffer

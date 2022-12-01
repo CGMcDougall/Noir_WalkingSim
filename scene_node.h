@@ -39,6 +39,8 @@ namespace game {
             void SetPosition(glm::vec3 position);
             void SetOrientation(glm::quat orientation);
             void SetScale(glm::vec3 scale);
+            void SetJoint(glm::vec3 j) { joint_ = j; }
+            void SetOrbit(glm::quat o) { orbit_ = o; }
             
             // Perform transformations on node
             void Translate(glm::vec3 trans);
@@ -63,7 +65,7 @@ namespace game {
             void setDirectionalLightSources(std::vector<glm::vec3> li);
 
 
-        private:
+        protected:
             std::string name_; // Name of the scene node
             GLuint array_buffer_; // References to geometry: vertex and array buffers
             GLuint element_array_buffer_;
@@ -74,6 +76,9 @@ namespace game {
             glm::vec3 position_; // Position of node
             glm::quat orientation_; // Orientation of node
             glm::vec3 scale_; // Scale of node
+
+            glm::quat orbit_; //orbit
+            glm::vec3 joint_ = glm::vec3(0, 0, 0); //joint, assumed to be 0,0,0
 
             // Set matrices that transform the node in a shader program
             void SetupShader(GLuint program);

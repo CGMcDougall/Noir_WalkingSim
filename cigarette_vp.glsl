@@ -26,22 +26,25 @@ float upward = 0.0; // additional y velocity for all particles
 
 void main()
 {
+    //lets slow down time
+    float time = timer/4;
+
     // Let time cycle every four seconds
-    float circtime = mod((timer+color.x),1.8f);
+    float circtime = mod((time+color.x),1);
     float t = circtime; // Our time parameter
     float halfT = (4+color.x)/2;
     
     // Let's first work in model space (apply only world matrix)
-    vec4 position = world_mat * vec4(vertex, 1.0);
+    vec4 position = world_mat * vec4(vertex, 1.4f);
     vec4 norm = normal_mat * vec4(normal, 0.0);
 
     // Move point along normal and down with t*t (acceleration under gravity)
     
 
-    //position.x = (sin(t));
-    if(color.y > 0.5)position.x += log(t) * cos(t)/3 * (t*(color.x));
-    else position.x += log(t) * cos(t) * (t*abs(color.y));
-    position.z = position.x;
+     //position.x = (sin(t));
+    //if(color.y > 0.5)position.x += log(t) * cos(t)/3 * (t*(color.x));
+    //else position.x += log(t) * cos(t) * (t*abs(color.y));
+    position.x += log(t) * sin(t)/3 * (t*color.x);
 	
 	// add "upward" to y speed to launch the particles vertically -- can easily omit
     //position.y += (upward+norm.y)*t*speed - grav*speed*up_vec.y*t*t;
