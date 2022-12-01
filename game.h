@@ -13,6 +13,7 @@
 #include "camera.h"
 #include "asteroid.h"
 #include "streetlamp.h"
+#include "branch.h"
 #include "cig.h"
 
 namespace game {
@@ -61,6 +62,9 @@ namespace game {
             // Flag to turn animation on/off
             bool animating_;
 
+            // Flag to turn visual blur on/off
+            bool blur_;
+
             // Methods to initialize the game
             void InitWindow(void);
             void InitView(void);
@@ -72,21 +76,22 @@ namespace game {
 
             static void CursorCallback(GLFWwindow* window, double xPos, double yPos);
             double oldMouseX, oldMouseY; //helper vals for cursorCallback
-            
 
-            // Asteroid field
-            // Create instance of one asteroid
-            Asteroid *CreateAsteroidInstance(std::string entity_name, std::string object_name, std::string material_name);
-            // Create entire random asteroid field
-            void CreateAsteroidField(int num_asteroids = 1500);
-
+            // Create an instance of a streetlamp (includes the position of its directional light)
             Streetlamp* Game::CreateStreetlampInstance(std::string entity_name, std::string object_name, std::string material_name, std::string texture_name);
 
+            // Creates a street environment at a location based on a template
             Cigarette* Game::CreateCigaretteInstance(std::string entity_name, std::string object_name, std::string material_name, std::string texture_name);
             static Cigarette* Cig;
 
 
             void CreateRoad(int num_roads = 5);
+
+            // Tree
+            // Create instance of a branch
+            Branch* CreateBranchInstance(std::string entity_name, std::string object_name, std::string material_name, std::string texture_name, Branch* parent_branch, int depth, int id_in_set, int branch_per_level);
+            // Create an entire tree
+            void CreateTree(int branch_per_level = 5, glm::vec3 position = glm::vec3(0, 0, 0));
 
             // Create an instance of an object stored in the resource manager
             SceneNode *CreateInstance(std::string entity_name, std::string object_name, std::string material_name, std::string texture_name = std::string(""));

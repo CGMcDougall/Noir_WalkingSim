@@ -20,10 +20,10 @@ float pi = 3.1415926535897932;
 // Grayscale lighting with a slight blue ambient hue (nighttime is never pure black)
 vec3 diffuse_color = vec3(0.2, 0.2, 0.2);
 vec3 specular_color = vec3(1, 1, 1);
-vec3 ambient_color = vec3(0.1, 0.1, 0.12);
+vec3 ambient_color = vec3(0.2, 0.2, 0.22);
 
 float roughness = 0.5;
-float light_intensity = 1.0*pi;
+float light_intensity = 5.0*pi;
 
 
 vec3 lightCalc(vec3 lightPos){
@@ -44,7 +44,7 @@ vec3 lightCalc(vec3 lightPos){
     vec3 downVector = vec3(0,-1,0);
     float theta = dot(L, normalize(-downVector));
 
-    if (theta > cos(radians(60.0f))) {
+    if (theta > cos(radians(70.0f))) {
         //V = (eye_position - position_interp);
         V = - position_interp; // Eye position is (0, 0, 0) in view coordinates
         V = normalize(V);
@@ -75,8 +75,8 @@ vec3 lightCalc(vec3 lightPos){
         // Microfacet term: assume implicit geometry function
         vec3 mfacet = fresnel * (ndist / 4.0);
 
-        float epsilon = (cos(radians(30.0f)) - cos(radians(60.0f)));
-        float intensity = clamp((theta - cos(radians(60.0f))) / epsilon, 0.0, 3.0);
+        float epsilon = (cos(radians(30.0f)) - cos(radians(70.0f)));
+        float intensity = light_intensity * clamp((theta - cos(radians(70.0f))) / epsilon, 0.0, 1.0);
 
         // Full illumination
         illum = ambient_color + (diffuse + mfacet)*intensity*NL;        

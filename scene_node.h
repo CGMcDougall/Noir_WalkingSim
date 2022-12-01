@@ -34,11 +34,21 @@ namespace game {
             glm::vec3 GetPosition(void) const;
             glm::quat GetOrientation(void) const;
             glm::vec3 GetScale(void) const;
+            glm::mat4 GetMatrix(void) const;
+            glm::vec3 GetUp(void) const;
+            glm::quat GetOrbitRotation(void) const;
 
             // Set node attributes
             void SetPosition(glm::vec3 position);
             void SetOrientation(glm::quat orientation);
             void SetScale(glm::vec3 scale);
+            void SetUp(glm::vec3 up);
+            
+            // Children/parent actions
+            void AddChild(SceneNode*);
+            void SetParent(SceneNode*);
+            SceneNode* GetParent();
+
             void SetJoint(glm::vec3 j) { joint_ = j; }
             void SetOrbit(glm::quat o) { orbit_ = o; }
             
@@ -46,6 +56,7 @@ namespace game {
             void Translate(glm::vec3 trans);
             void Rotate(glm::quat rot);
             void Scale(glm::vec3 scale);
+            void Orbit(glm::vec3 pos, glm::quat orb);
 
             // Draw the node according to scene parameters in 'camera'
             // variable
@@ -76,6 +87,13 @@ namespace game {
             glm::vec3 position_; // Position of node
             glm::quat orientation_; // Orientation of node
             glm::vec3 scale_; // Scale of node
+            glm::vec3 orbit_position_; // Position of the node's orbit anchor
+            glm::quat orbit_rotation_; // Rotation quaternion of the node's orbit
+            glm::mat4 transf_; // Holds the final rotation information for this node before it updates that of its children.
+            glm::vec3 up_; // The up vector of the node
+
+            SceneNode* parent_; // Parent node
+            std::vector<SceneNode*> children_;  // Child node(s)
 
             glm::quat orbit_; //orbit
             glm::vec3 joint_ = glm::vec3(0, 0, 0); //joint, assumed to be 0,0,0

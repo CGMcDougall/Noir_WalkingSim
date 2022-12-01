@@ -4,6 +4,7 @@
 
 #include "game.h"
 #include "path_config.h"
+#include <random>
 
 
 namespace game {
@@ -52,6 +53,7 @@ void Game::Init(void){
 
     // Set variables
     animating_ = true;
+    blur_ = false;
 }
 
        
@@ -126,60 +128,75 @@ void Game::InitEventHandlers(void){
 
 void Game::SetupResources(void){
 
-    // Load material to be applied to particles
+    // Particle Shaders
     std::string filename = std::string(MATERIAL_DIRECTORY) + std::string("\\particle");
     resman_.LoadResource(Material, "ParticleMaterial", filename.c_str());
 
+    filename = std::string(MATERIAL_DIRECTORY) + std::string("\\rain_particles");
+    resman_.LoadResource(Material, "RainMaterial", filename.c_str());
+
+
+    // Material Shaders
     filename = std::string(MATERIAL_DIRECTORY) + std::string("\\noir");
     resman_.LoadResource(Material, "Noir", filename.c_str());
 
     filename = std::string(MATERIAL_DIRECTORY) + std::string("\\road_noir");
     resman_.LoadResource(Material, "RoadNoir", filename.c_str());
 
-    filename = std::string(MATERIAL_DIRECTORY) + std::string("/cigarette");
+    filename = std::string(MATERIAL_DIRECTORY) + std::string("\\cigarette");
     resman_.LoadResource(Material, "Cigarette", filename.c_str());
 
     filename = std::string(MATERIAL_DIRECTORY) + std::string("\\metal");
     resman_.LoadResource(Material, "Metal", filename.c_str());
 
+
+    // Environment Objects
     filename = std::string(MATERIAL_DIRECTORY) + std::string("\\Assets/StraightRoad1.obj");
     resman_.LoadResource(Mesh, "Rd1", filename.c_str());
   
-
-   /* filename = std::string(MATERIAL_DIRECTORY) + std::string("\\Assets/Building.obj");
-    resman_.LoadResource(Mesh, "Building2", filename.c_str());*/
-    
     filename = std::string(MATERIAL_DIRECTORY) + std::string("\\Assets/Car2.obj");
     resman_.LoadResource(Mesh, "car", filename.c_str());
 
     filename = std::string(MATERIAL_DIRECTORY) + std::string("\\Assets/Street_Lamp_TS.obj");
     resman_.LoadResource(Mesh, "streetlamp", filename.c_str());
 
-   /* filename = std::string(MATERIAL_DIRECTORY) + std::string("\\Assets/Building1.obj");
-    resman_.LoadResource(Mesh, "OldHouse", filename.c_str());
-
-
-    filename = std::string(MATERIAL_DIRECTORY) + std::string("\\Assets/Buildings/CentralBuilding.obj");
-    resman_.LoadResource(Mesh, "centralBuilding", filename.c_str());*/
-
     filename = std::string(MATERIAL_DIRECTORY) + std::string("\\Assets/Grate/GrateModel.obj");
     resman_.LoadResource(Mesh, "Grate", filename.c_str());
     
+    /* filename = std::string(MATERIAL_DIRECTORY) + std::string("\\Assets/TrafficLight/Traffic_Lights.obj");
+    resman_.LoadResource(Mesh, "TrafficLight", filename.c_str());*/
+
+    resman_.CreateCylinder("BranchCylinder", BRANCH_LENGTH, 0.4, 10, 10);
+
+
+    // Misc Objects
     filename = std::string(MATERIAL_DIRECTORY) + std::string("\\Assets/Cig/Cig.obj");
     resman_.LoadResource(Mesh, "Cig", filename.c_str());
 
-   /* filename = std::string(MATERIAL_DIRECTORY) + std::string("\\Assets/TrafficLight/Traffic_Lights.obj");
-    resman_.LoadResource(Mesh, "TrafficLight", filename.c_str());*/
 
+    // Building Objects
+   /* filename = std::string(MATERIAL_DIRECTORY) + std::string("\\Assets/Building.obj");
+    resman_.LoadResource(Mesh, "Building2", filename.c_str());*/
 
-  /*  filename = std::string(MATERIAL_DIRECTORY) + std::string("\\Assets/Buildings/Building2.obj");
+    filename = std::string(MATERIAL_DIRECTORY) + std::string("\\Assets/Building1.obj");
+    resman_.LoadResource(Mesh, "OldHouse", filename.c_str());
+
+    filename = std::string(MATERIAL_DIRECTORY) + std::string("\\Assets/Buildings/Building2.obj");
     resman_.LoadResource(Mesh, "B2", filename.c_str());
 
     filename = std::string(MATERIAL_DIRECTORY) + std::string("\\Assets/Buildings/Building3.obj");
     resman_.LoadResource(Mesh, "B3", filename.c_str());
 
+    filename = std::string(MATERIAL_DIRECTORY) + std::string("\\Assets/Buildings/CentralBuilding.obj");
+    resman_.LoadResource(Mesh, "centralBuilding", filename.c_str());
+
+
+    // Textures
     filename = std::string(MATERIAL_DIRECTORY) + std::string("\\Assets/rocky.png");
     resman_.LoadResource(Texture, "RockyTexture", filename.c_str());
+
+    filename = std::string(MATERIAL_DIRECTORY) + std::string("\\Assets/barkTexture.png");
+    resman_.LoadResource(Texture, "BarkTexture", filename.c_str());
 
     filename = std::string(MATERIAL_DIRECTORY) + std::string("\\Assets/RedTempText.png");
     resman_.LoadResource(Texture, "RedTexture", filename.c_str());
@@ -196,21 +213,25 @@ void Game::SetupResources(void){
     filename = std::string(MATERIAL_DIRECTORY) + std::string("\\Assets/GreenTempText.png");
     resman_.LoadResource(Texture, "GreenTexture", filename.c_str());
 
-
-
   /*  filename = std::string(MATERIAL_DIRECTORY) + std::string("\\Assets/Body_Metallic1.png");
     resman_.LoadResource(Texture, "Car1Text", filename.c_str());*/
-
-
 
     /*filename = std::string(MATERIAL_DIRECTORY) + std::string("\\Assets/BrickBuildText.png");
     resman_.LoadResource(Texture, "BrickText", filename.c_str());*/
 
 
-    // Create particles for explosion
-    //resman_.CreateSphereParticles("SphereParticles");
+    // Load material for screen-space effect
+    filename = std::string(MATERIAL_DIRECTORY) + std::string("/screen_space");
+    resman_.LoadResource(Material, "ScreenSpaceMaterial", filename.c_str());
+
+
+    // Create particles
+    resman_.CreateRainParticles("RainParticles");
     
-    resman_.CreateSmokeParticles("SmokeParticles");
+    // Setup drawing to texture
+    scene_.SetupDrawToTexture();
+
+    //resman_.CreateSmokeParticles("SmokeParticles");
     
 }
 
@@ -220,16 +241,14 @@ void Game::SetupScene(void){
     // Set background color for the scene
     scene_.SetBackgroundColor(viewport_background_color_g);
 
+    CreateTree(3, glm::vec3(0, 2.5, 0));
+
     // Create particles
-    //game::SceneNode *particles = CreateInstance("ParticleInstance1", "SphereParticles", "ParticleMaterial");
+    game::SceneNode *particles = CreateInstance("RainInstance", "RainParticles", "RainMaterial");
+
+
     //game::SceneNode *Car = CreateInstance("Car1", "car", "Noir");
     //Car->SetScale(glm::vec3(0.2, 0.2, 0.2));
-
-    //game::SceneNode* Road = CreateInstance("Road1", "Rd1", "Noir");
-    ////Road->SetScale(glm::vec3(0.2, 0.2, 0.2));
-
-    //game::SceneNode* StreetLamp = CreateInstance("StreetLamp1", "streetlamp", "Noir", "RockyTexture");
-    //StreetLamp->SetScale(glm::vec3(10, 10, 10));
 
    /* game::SceneNode* Building = CreateInstance("one", "car", "Noir");
     Building->SetPosition(glm::vec3(20, 0, -20));
@@ -260,18 +279,7 @@ void Game::MainLoop(void){
     // Loop while the user did not close the window
     while (!glfwWindowShouldClose(window_)){
 
-        SceneNode* n = scene_.GetNode("Cigarette");
-        glm::vec3 pos = camera_.GetPosition();
-        pos = glm::vec3(pos.x + 0.1, pos.y - 0.1, pos.z - 0.7);
-        //n->SetPosition(pos);
-        //n->SetOrientation(camera_.GetOrientation());
-        //n->Rotate(camera_.GetOrientation());
-        Cigarette* c = (Cigarette*) n;
-        //c->Orbit(camera_.GetOrientation());
-        c->SetJoint(pos);
-        //c->SetJoint(camera_.GetPosition());
-        c->Update();
-
+        //SceneNode* n = scene_.GetNode("Car1");
         ////if (n != NULL)std::cout << "LOADED AND HERE" << std::endl;
         ////else std::cout << "dumb ass, maybe get it to work"<< std::endl;
         //n->SetPosition(glm::vec3(0, 0, 0));
@@ -285,8 +293,34 @@ void Game::MainLoop(void){
 
         //scene_.AddLightSource(camera_.GetPosition(), 0);
         
-        // Draw the scene
-        scene_.Draw(&camera_);
+        if (animating_) {
+            static double last_time = 0;
+            double current_time = glfwGetTime();
+            if ((current_time - last_time) > 0.05) {
+                scene_.Update();
+                last_time = current_time;
+            }
+        }
+
+        if (blur_) {
+            // Draw the scene to a texture
+            scene_.DrawToTexture(&camera_);
+
+            // Save the texture to a file for debug
+            /*static int first = 1;
+            if (first){
+                scene_.SaveTexture("texture.ppm");
+                first = 0;
+            }*/
+
+            // Process the texture with a screen-space effect and display
+            // the texture
+            scene_.DisplayTexture(resman_.GetResource("ScreenSpaceMaterial")->GetResource());
+        }
+        else {
+            // Draw the scene
+            scene_.Draw(&camera_);
+        }
 
 
         // Push buffer drawn in the background onto the display
@@ -346,9 +380,6 @@ void Game::CursorCallback(GLFWwindow* window, double xPos, double yPos) {
     
 }
 
-
-
-
 void Game::KeyCallback(GLFWwindow* window, int key, int scancode, int action, int mods){
 
     // Get user data with a pointer to the game class
@@ -366,10 +397,8 @@ void Game::KeyCallback(GLFWwindow* window, int key, int scancode, int action, in
         game->animating_ = (game->animating_ == true) ? false : true;
     }
 
-
     glm::vec3 forwardVec = game->camera_.GetForward();
     forwardVec = glm::vec3(forwardVec.x, forwardVec.y, forwardVec.z);
-    
 
     // View control
     float rot_factor(glm::pi<float>() / 180);
@@ -422,6 +451,9 @@ void Game::KeyCallback(GLFWwindow* window, int key, int scancode, int action, in
     }
     if (key == GLFW_KEY_D) {
         game->camera_.Translate(game->camera_.GetSide() * trans_factor);
+    }
+    if (key == GLFW_KEY_B) {
+        game->blur_ = !game->blur_;
     }
 
 
@@ -655,6 +687,102 @@ void Game::CreateRoad(int num_roads) {
     }
 }
 
+Branch* Game::CreateBranchInstance(std::string entity_name, std::string object_name, std::string material_name, std::string texture_name, Branch* parent_branch, int depth, int id_in_set, int branch_per_level) {
+    // Get resources
+    Resource* geom = resman_.GetResource(object_name);
+    if (!geom) {
+        throw(GameException(std::string("Could not find resource \"") + object_name + std::string("\"")));
+    }
+
+    Resource* mat = resman_.GetResource(material_name);
+    if (!mat) {
+        throw(GameException(std::string("Could not find resource \"") + material_name + std::string("\"")));
+    }
+
+    Resource* tex = NULL;
+    if (texture_name != "") {
+        tex = resman_.GetResource(texture_name);
+        if (!tex) {
+            throw(GameException(std::string("Could not find resource \"") + texture_name + std::string("\"")));
+        }
+    }
+
+    // Create branch instance
+    Branch* branch = new Branch(entity_name, geom, mat, tex);
+
+    // Set relations
+    branch->SetParent(parent_branch);
+
+    // For most branches (not the trunk), set up the patterned attributes
+    if (parent_branch != NULL) {
+        parent_branch->AddChild(branch);
+        glm::vec3 p_scale = parent_branch->GetScale();
+        glm::vec3 scale = glm::vec3(p_scale.x*0.75, p_scale.y*0.9, p_scale.z*0.75); // I wanted the branches to stay long
+        branch->SetPosition(glm::vec3(scale.x * -BRANCH_LENGTH/2.5, (BRANCH_LENGTH/1.6), 0));
+        branch->SetScale(scale);
+        branch->Rotate(glm::quat(1, 0, 0, glm::half_pi<float>() * 0.2)); // Rotate a bit outwards
+
+        std::random_device rand;
+        std::mt19937 gen(rand());
+        std::uniform_int_distribution<> dist(-0.5, 0.5);
+
+        glm::quat ang_m = glm::normalize(glm::angleAxis(id_in_set * 2 * glm::pi<float>() / branch_per_level + dist(gen), glm::vec3(0, 1, 0))); // Branches are evenly spaced
+        branch->Orbit(glm::vec3(scale.x * -BRANCH_LENGTH/2.5, 0, 0), ang_m);
+    }
+    branch->SetDepth(depth); // For different ranges of sway depending on size of branch
+
+    scene_.AddNode(branch);
+    return branch;
+}
+
+void Game::CreateTree(int branch_per_level, glm::vec3 position) {
+    std::stringstream ss;
+    ss << 0;
+    std::string index = ss.str();
+    std::string name = "BranchInstance" + index;
+    ss.clear();
+
+    // Create branch instance
+    Branch* trunk = CreateBranchInstance(name, "BranchCylinder", "RoadNoir", "BarkTexture", NULL, 0, 0, 0);
+    // Trunk is a special branch which has its parameters 
+    trunk->SetPosition(position);
+    trunk->SetOrientation(glm::quat(0, glm::vec3(0.0, 1.0, 0.0)));
+    trunk->SetUp(glm::vec3(0.0, 1.0, 0.0));
+    for (int i = 0; i < branch_per_level; i++) {
+
+        // Setup naming convention depth+index
+        ss << 1 << i;
+        name = "BranchInstance" + index;
+        ss.clear();
+
+        // Create and set up new branch.
+        Branch* new_branch = CreateBranchInstance(name, "BranchCylinder", "RoadNoir", "BarkTexture", trunk, 1, i, branch_per_level);
+
+        // Track the parent for the next layer
+        Branch* depth1_branch = new_branch;
+
+        // Next two tiers do the same thing
+        for (int j = 0; j < branch_per_level; j++) {
+
+            ss << 2 << i;
+            name = "BranchInstance" + index;
+            ss.clear();
+
+            Branch* new_branch = CreateBranchInstance(name, "BranchCylinder", "RoadNoir", "BarkTexture", depth1_branch, 2, j, branch_per_level);
+
+            Branch* depth2_branch = new_branch;
+
+            for (int k = 0; k < branch_per_level; k++) {
+
+                ss << 3 << i;
+                name = "BranchInstance" + index;
+                ss.clear();
+
+                Branch* new_branch = CreateBranchInstance(name, "BranchCylinder", "RoadNoir", "BarkTexture", depth2_branch, 3, k, branch_per_level);
+            }
+        }
+    }
+}
 
 SceneNode *Game::CreateInstance(std::string entity_name, std::string object_name, std::string material_name, std::string texture_name){
 
@@ -672,7 +800,7 @@ SceneNode *Game::CreateInstance(std::string entity_name, std::string object_name
     if (texture_name != ""){
         tex = resman_.GetResource(texture_name);
         if (!tex){
-            throw(GameException(std::string("Could not find resource \"")+material_name+std::string("\"")));
+            throw(GameException(std::string("Could not find resource \"")+texture_name+std::string("\"")));
         }
     }
 
