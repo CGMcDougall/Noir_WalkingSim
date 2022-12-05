@@ -21,7 +21,18 @@
       "buildCommandArgs": "",
       "ctestCommandArgs": "",
       "inheritEnvironments": [ "msvc_x86" ],
-      "variables": []
+      "variables": [
+        {
+          "name": "OPENAL_LIBRARY",
+          "value": "C:/Users/Conno/OneDrive/Documents/GitHub/vcpkg/installed/x86-windows/debug/lib/OpenAL32.lib",
+          "type": "FILEPATH"
+        },
+        {
+          "name": "ALUT_LIBRARY",
+          "value": "C:/Users/Conno/OneDrive/Documents/GitHub/vcpkg/installed/x86-windows/debug/lib/alut.lib",
+          "type": "FILEPATH"
+        }
+      ]
     },
     {
       "name": "x86-Release",
@@ -32,8 +43,7 @@
       "cmakeCommandArgs": "",
       "buildCommandArgs": "",
       "ctestCommandArgs": "",
-      "inheritEnvironments": [ "msvc_x86" ],
-      "variables": []
+      "inheritEnvironments": [ "msvc_x86" ]
     }
   ]
 }

@@ -27,7 +27,7 @@ Resource::~Resource(){
 
 
 ResourceType Resource::GetType(void) const {
-
+    
     return type_;
 }
 

@@ -27,8 +27,7 @@ namespace game {
 		
 		void SetPosition(glm::vec3 p);
 		void SetJoint(glm::vec3 j);
-		void Orbit(glm::quat r);
-
+		
 		void Draw(Camera *cam);
 		void Update();
 

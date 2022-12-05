@@ -17,6 +17,7 @@ namespace game {
 		smoke->SetPosition(pos);
 		smoke->SetJoint(pos);
 		smoke->SetScale(glm::vec3(1,1,1)*0.1f);
+		//smoke->Orbit(pos, GetOrbitRotation());
 	}
 
 	void Cigarette::Update() {
@@ -25,7 +26,7 @@ namespace game {
 
 		smoke->SetJoint(pos);
 		smoke->SetPosition(pos);
-		smoke->SetOrbit(glm::normalize(GetOrientation()));
+		//smoke->Orbit(pos,GetOrientation());
 	}
 
 	void Cigarette::Draw(Camera* cam) {
@@ -38,11 +39,6 @@ namespace game {
 		//joint_ = p;
 	}
 
-
-	void Cigarette::Orbit(glm::quat r) {
-		orbit_ = r;
-		orbit_ = glm::normalize(orbit_);
-	}
 
 	void Cigarette::SetJoint(glm::vec3 j) {
 		joint_ = j;

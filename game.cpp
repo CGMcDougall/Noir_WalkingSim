@@ -5,7 +5,7 @@
 #include "game.h"
 #include "path_config.h"
 #include <random>
-
+#include <glm/gtx/string_cast.hpp>
 
 namespace game {
 
@@ -54,6 +54,14 @@ void Game::Init(void){
     // Set variables
     animating_ = true;
     blur_ = false;
+
+   /* try {
+        am.Init(NULL);
+    }
+    catch (std::exception& e) {
+        std::cout<<"Problem occured with audio device" << std::endl;
+    }*/
+    
 }
 
        
@@ -174,11 +182,13 @@ void Game::SetupResources(void){
     resman_.LoadResource(Mesh, "Cig", filename.c_str());
 
 
+ 
+
     // Building Objects
    /* filename = std::string(MATERIAL_DIRECTORY) + std::string("\\Assets/Building.obj");
     resman_.LoadResource(Mesh, "Building2", filename.c_str());*/
 
-    filename = std::string(MATERIAL_DIRECTORY) + std::string("\\Assets/Building1.obj");
+ /*   filename = std::string(MATERIAL_DIRECTORY) + std::string("\\Assets/Building1.obj");
     resman_.LoadResource(Mesh, "OldHouse", filename.c_str());
 
     filename = std::string(MATERIAL_DIRECTORY) + std::string("\\Assets/Buildings/Building2.obj");
@@ -188,7 +198,7 @@ void Game::SetupResources(void){
     resman_.LoadResource(Mesh, "B3", filename.c_str());
 
     filename = std::string(MATERIAL_DIRECTORY) + std::string("\\Assets/Buildings/CentralBuilding.obj");
-    resman_.LoadResource(Mesh, "centralBuilding", filename.c_str());
+    resman_.LoadResource(Mesh, "centralBuilding", filename.c_str());*/
 
 
     // Textures
@@ -202,7 +212,7 @@ void Game::SetupResources(void){
     resman_.LoadResource(Texture, "RedTexture", filename.c_str());
 
     filename = std::string(MATERIAL_DIRECTORY) + std::string("\\Assets/BlueTempText.png");
-    resman_.LoadResource(Texture, "BlueTexture", filename.c_str());*/
+    resman_.LoadResource(Texture, "BlueTexture", filename.c_str());
 
     filename = std::string(MATERIAL_DIRECTORY) + std::string("\\Assets/Cig/CigText.png");
     resman_.LoadResource(Texture, "CigText", filename.c_str());
@@ -220,6 +230,10 @@ void Game::SetupResources(void){
     resman_.LoadResource(Texture, "BrickText", filename.c_str());*/
 
 
+    //auido .wav file
+    filename = std::string(MATERIAL_DIRECTORY).append("\\Assets/rain.wav");
+    //rainIndex = am.AddSound(filename.c_str());
+
     // Load material for screen-space effect
     filename = std::string(MATERIAL_DIRECTORY) + std::string("/screen_space");
     resman_.LoadResource(Material, "ScreenSpaceMaterial", filename.c_str());
@@ -231,7 +245,7 @@ void Game::SetupResources(void){
     // Setup drawing to texture
     scene_.SetupDrawToTexture();
 
-    //resman_.CreateSmokeParticles("SmokeParticles");
+    resman_.CreateSmokeParticles("SmokeParticles");
     
 }
 
@@ -241,7 +255,7 @@ void Game::SetupScene(void){
     // Set background color for the scene
     scene_.SetBackgroundColor(viewport_background_color_g);
 
-    CreateTree(3, glm::vec3(0, 2.5, 0));
+    //CreateTree(3, glm::vec3(0, 2.5, 0));
 
     // Create particles
     game::SceneNode *particles = CreateInstance("RainInstance", "RainParticles", "RainMaterial");
@@ -261,6 +275,10 @@ void Game::SetupScene(void){
     //game::SceneNode* smoke1 = CreateInstance("Smoke1", "SmokeParticles", "Cigarette", "SmokeText");
     //smoke1->SetPosition(glm::vec3(-1, 0, 0));
 
+    //am.SetSoundPosition(rainIndex, 0.0f, 0.0f, 0.0f);
+    //am.SetLoop(rainIndex, true);
+    //am.PlaySound(rainIndex);
+   
 
     game::Cigarette* cig = CreateCigaretteInstance("Cigarette", "Cig", "Noir", "CigText");
     //cig->giveSmokeParticle(smoke1);
@@ -268,7 +286,7 @@ void Game::SetupScene(void){
     cig->SetJoint(glm::vec3(pos.x + 0.1, pos.y - 0.1, pos.z - 0.7));
     cig->SetPosition(glm::vec3(pos.x + 0.1, pos.y - 0.1, pos.z - 0.7));
     Cig = cig;
-    //camera_.giveCig(cig);
+    
     //CreateRoad(2);
 
 }
@@ -292,6 +310,25 @@ void Game::MainLoop(void){
         //n->SetPosition(glm::vec3(0, 3, 0));
 
         //scene_.AddLightSource(camera_.GetPosition(), 0);
+
+        SceneNode* n = scene_.GetNode("Cigarette");
+        glm::vec3 pos = camera_.GetPosition();
+        pos = glm::vec3(pos.x + 0.1, pos.y - 0.1, pos.z - 0.7);
+        n->SetPosition(pos);
+        //n->SetOrientation(camera_.GetOrientation());
+        //n->Rotate(camera_.GetOrientation());
+
+        pos = glm::vec3(0, 0, 1);
+
+        Cigarette* c = (Cigarette*)n;
+        //n->Orbit(pos, glm::quat(0.00001f,glm::vec3(0,1,0)));
+        
+        c->SetJoint(pos);
+        //c->SetJoint(camera_.GetPosition());
+        
+
+
+
         
         if (animating_) {
             static double last_time = 0;
@@ -355,26 +392,41 @@ void Game::CursorCallback(GLFWwindow* window, double xPos, double yPos) {
     //float yMag = glm::abs(yCord);
     float mag = 0.4;
 
+    glm::quat r = glm::quat(0,glm::vec3(0,0,0));
+    glm::vec3 rot;
+    float mag2 = 0.1f;
 
+    
 
     float trans_factor = 1.0;
     if (yCord < 0) {
         game->camera_.Pitch(rot_factor * mag);
-        
+        r = glm::normalize(glm::angleAxis(-rot_factor * mag * mag2, game->camera_.GetSide()));
     }
     if (yCord > 0) {
         game->camera_.Pitch(-rot_factor * mag);
+        r = glm::normalize(glm::angleAxis(rot_factor * mag * mag2, game->camera_.GetSide()));
     }
     if (xCord < 0) {
-        game->camera_.Yaw(rot_factor * mag);
+        r = game->camera_.Yaw(rot_factor * mag);
+        r = glm::normalize(glm::angleAxis(-rot_factor * mag * mag2, game->camera_.GetUp()));
     }
     if (xCord > 0) {
-        game->camera_.Yaw(-rot_factor * mag);
+        r = game->camera_.Yaw(-rot_factor * mag);
+        r = glm::normalize(glm::angleAxis(rot_factor * mag*mag2, game->camera_.GetUp()));
     }
 
-    //Cig->Orbit(game->camera_.GetOrientation());
-    
-    //Cig->Rotate(game->camera_.GetOrientation());
+    glm::vec3 pos = game->camera_.GetPosition();
+    pos = glm::vec3(pos.x + 0.1, pos.y - 0.1, pos.z - 0.7);
+    //s = glm::vec3(0, 0, 1);
+    //std::cout << glm::to_string(glm::mat4_cast(r)) << std::endl;
+
+    //Cig->Orbit(pos,game->camera_.GetOrientation());
+    Cig->Orbit(pos, r);
+    //Cig->SetPosition(pos);
+    Cig->SetOrientation(game->camera_.GetOrientation());
+    //Cig->Update();
+    //Cig->Rotate(r);
 
     glfwSetCursorPos(window, 0, 0);
     
@@ -478,46 +530,8 @@ Game::~Game(){
 }
 
 
-Asteroid *Game::CreateAsteroidInstance(std::string entity_name, std::string object_name, std::string material_name){
-
-    // Get resources
-    Resource *geom = resman_.GetResource(object_name);
-    if (!geom){
-        throw(GameException(std::string("Could not find resource \"")+object_name+std::string("\"")));
-    }
-
-    Resource *mat = resman_.GetResource(material_name);
-    if (!mat){
-        throw(GameException(std::string("Could not find resource \"")+material_name+std::string("\"")));
-    }
-
-    // Create asteroid instance
-    Asteroid *ast = new Asteroid(entity_name, geom, mat);
-    scene_.AddNode(ast);
-    return ast;
-}
 
 
-void Game::CreateAsteroidField(int num_asteroids){
-
-    // Create a number of asteroid instances
-    for (int i = 0; i < num_asteroids; i++){
-        // Create instance name
-        std::stringstream ss;
-        ss << i;
-        std::string index = ss.str();
-        std::string name = "AsteroidInstance" + index;
-
-        // Create asteroid instance
-        Asteroid *ast = CreateAsteroidInstance(name, "SimpleSphereMesh", "ObjectMaterial");
-
-        // Set attributes of asteroid: random position, orientation, and
-        // angular momentum
-        ast->SetPosition(glm::vec3(-300.0 + 600.0*((float) rand() / RAND_MAX), -300.0 + 600.0*((float) rand() / RAND_MAX), 600.0*((float) rand() / RAND_MAX)));
-        ast->SetOrientation(glm::normalize(glm::angleAxis(glm::pi<float>()*((float) rand() / RAND_MAX), glm::vec3(((float) rand() / RAND_MAX), ((float) rand() / RAND_MAX), ((float) rand() / RAND_MAX)))));
-        ast->SetAngM(glm::normalize(glm::angleAxis(0.05f*glm::pi<float>()*((float) rand() / RAND_MAX), glm::vec3(((float) rand() / RAND_MAX), ((float) rand() / RAND_MAX), ((float) rand() / RAND_MAX)))));
-    }
-}
 
 Streetlamp* Game::CreateStreetlampInstance(std::string entity_name, std::string object_name, std::string material_name, std::string texture_name) {
     // Get resources

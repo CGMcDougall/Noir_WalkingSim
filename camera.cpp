@@ -89,7 +89,7 @@ glm::vec3 Camera::GetUp(void) const {
 }
 
 
-void Camera::Pitch(float angle){
+glm::quat Camera::Pitch(float angle){
 
     glm::quat rotation = glm::angleAxis(angle, GetSide());
     orientation_ = rotation * orientation_;
@@ -97,24 +97,26 @@ void Camera::Pitch(float angle){
 
     camera_orientation_ = rotation * orientation_;
     camera_orientation_ = glm::normalize(camera_orientation_);
-    
+
+    return glm::normalize(rotation);
 }
 
 
-void Camera::Yaw(float angle){
+glm::quat Camera::Yaw(float angle){
 
     glm::quat rotation = glm::angleAxis(angle, GetUp());
     orientation_ = rotation * orientation_;
     orientation_ = glm::normalize(orientation_);
-    
+    return glm::normalize(rotation);
 }
 
 
-void Camera::Roll(float angle){
+glm::quat Camera::Roll(float angle){
 
     glm::quat rotation = glm::angleAxis(angle, GetForward());
     orientation_ = rotation * orientation_;
     orientation_ = glm::normalize(orientation_);
+    return glm::normalize(rotation);
 
     //camera_orientation_ = rotation * orientation_;
     //camera_orientation_ = glm::normalize(camera_orientation_);

@@ -35,9 +35,9 @@ namespace game {
             glm::vec3 GetUp(void) const;
 
             // Perform relative transformations of camera
-            void Pitch(float angle);
-            void Yaw(float angle);
-            void Roll(float angle);
+            glm::quat Pitch(float angle);
+            glm::quat Yaw(float angle);
+            glm::quat Roll(float angle);
 
             // Set the view from camera parameters: initial position of camera,
             // point looking at, and up vector
