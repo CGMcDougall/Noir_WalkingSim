@@ -55,12 +55,12 @@ void Game::Init(void){
     animating_ = true;
     blur_ = false;
 
-    try {
+  /*  try {
         am.Init(NULL);
     }
     catch (std::exception& e) {
         std::cout<<"Problem occured with audio device" << std::endl;
-    }
+    }*/
     
 }
 
@@ -232,7 +232,7 @@ void Game::SetupResources(void){
 
     //auido .wav file
     filename = std::string(MATERIAL_DIRECTORY).append("\\Assets/rain.wav");
-    rainIndex = am.AddSound(filename.c_str());
+    //rainIndex = am.AddSound(filename.c_str());
 
     // Load material for screen-space effect
     filename = std::string(MATERIAL_DIRECTORY) + std::string("/screen_space");
@@ -275,9 +275,9 @@ void Game::SetupScene(void){
     //game::SceneNode* smoke1 = CreateInstance("Smoke1", "SmokeParticles", "Cigarette", "SmokeText");
     //smoke1->SetPosition(glm::vec3(-1, 0, 0));
 
-    am.SetSoundPosition(rainIndex, 0.0f, 0.0f, 0.0f);
+   /* am.SetSoundPosition(rainIndex, 0.0f, 0.0f, 0.0f);
     am.SetLoop(rainIndex, true);
-    am.PlaySound(rainIndex);
+    am.PlaySound(rainIndex);*/
    
 
     game::Cigarette* cig = CreateCigaretteInstance("Cigarette", "Cig", "Noir", "CigText");
@@ -419,7 +419,7 @@ void Game::CursorCallback(GLFWwindow* window, double xPos, double yPos) {
     glm::vec3 pos = game->camera_.GetPosition();
     pos = glm::vec3(pos.x + 0.1, pos.y - 0.1, pos.z - 0.7);
     //s = glm::vec3(0, 0, 1);
-    std::cout << glm::to_string(glm::mat4_cast(r)) << std::endl;
+    //std::cout << glm::to_string(glm::mat4_cast(r)) << std::endl;
 
     //Cig->Orbit(pos,game->camera_.GetOrientation());
     Cig->Orbit(pos, r);
