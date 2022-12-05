@@ -103,7 +103,7 @@ namespace game {
 
 
             //Audio Manager Class
-            /*AudioManager am;*/
+            AudioManager am;
             int rainIndex;
 
 
