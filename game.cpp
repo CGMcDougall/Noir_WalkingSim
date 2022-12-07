@@ -162,8 +162,6 @@ void Game::SetupResources(void){
     resman_.LoadResource(Material, "TiledBrick", filename.c_str());
 
 
-
-
     // Environment Objects
     filename = std::string(MATERIAL_DIRECTORY) + std::string("\\Assets/StraightRoad1.obj");
     resman_.LoadResource(Mesh, "Rd1", filename.c_str());
@@ -232,6 +230,10 @@ void Game::SetupResources(void){
 
     filename = std::string(MATERIAL_DIRECTORY) + std::string("\\Assets/tileableBrick.png");
     resman_.LoadResource(Texture, "TileableBrickTexture", filename.c_str());
+
+    filename = std::string(MATERIAL_DIRECTORY) + std::string("\\Assets/asphalt.png");
+    resman_.LoadResource(Texture, "AsphaltTexture", filename.c_str());
+
 
   /*  filename = std::string(MATERIAL_DIRECTORY) + std::string("\\Assets/Body_Metallic1.png");
     resman_.LoadResource(Texture, "Car1Text", filename.c_str());*/
@@ -333,13 +335,13 @@ void Game::MainLoop(void){
         //scene_.AddLightSource(camera_.GetPosition(), 0);
 
         SceneNode* n = scene_.GetNode("Cigarette");
-        glm::vec3 pos = camera_.GetPosition();
-        pos = glm::vec3(pos.x + 0.1, pos.y - 0.1, pos.z - 0.7);
-        n->SetPosition(pos);
+        glm::vec3 playerPos = camera_.GetPosition();
+        playerPos = glm::vec3(playerPos.x + 0.1, playerPos.y - 0.1, playerPos.z - 0.7);
+        n->SetPosition(playerPos);
         //n->SetOrientation(camera_.GetOrientation());
         //n->Rotate(camera_.GetOrientation());
 
-        pos = glm::vec3(0, 0, 1);
+       glm::vec3 pos = glm::vec3(0, 0, 1);
 
         Cigarette* c = (Cigarette*)n;
         //n->Orbit(pos, glm::quat(0.00001f,glm::vec3(0,1,0)));
@@ -347,8 +349,8 @@ void Game::MainLoop(void){
         c->SetJoint(pos);
         //c->SetJoint(camera_.GetPosition());
         
-
-
+        n = scene_.GetNode("RainInstance");
+        n->SetPosition(camera_.GetPosition());
 
         
         if (animating_) {
@@ -361,35 +363,20 @@ void Game::MainLoop(void){
         }
 
 
-        if (noir_) {
+        
+        if (blur_) {
             // Draw the scene to a texture
             scene_.DrawToTexture(&camera_);
 
-            // Save the texture to a file for debug
-            /*static int first = 1;
-            if (first){
-                scene_.SaveTexture("texture.ppm");
-                first = 0;
-            }*/
-
-            // Process the texture with a screen-space effect and display
-            // the texture
-            scene_.DisplayTexture(resman_.GetResource("NoirFilter")->GetResource());
-        }
-        else if (blur_) {
-            // Draw the scene to a texture
-            scene_.DrawToTexture(&camera_);
-
-            // Save the texture to a file for debug
-            /*static int first = 1;
-            if (first){
-                scene_.SaveTexture("texture.ppm");
-                first = 0;
-            }*/
-
-            // Process the texture with a screen-space effect and display
             // the texture
             scene_.DisplayTexture(resman_.GetResource("ScreenSpaceMaterial")->GetResource());
+
+        } else if (noir_) {
+            // Draw the scene to a texture
+            scene_.DrawToTexture(&camera_);
+
+            // the texture
+            scene_.DisplayTexture(resman_.GetResource("NoirFilter")->GetResource());
         }
         else {
             // Draw the scene
@@ -625,7 +612,7 @@ void Game::CreateRoad(int num_roads) {
         std::string roadname = "RoadInstance" + index;
 
         // Create road instance
-        game::SceneNode* Road = CreateInstance(roadname, "Rd1", "RoadNoir", "RockyTexture");
+        game::SceneNode* Road = CreateInstance(roadname, "Rd1", "RoadNoir", "AsphaltTexture");
 
         if (third) {
             //Buildings
@@ -658,9 +645,9 @@ void Game::CreateRoad(int num_roads) {
             CentralBuilding->SetPosition(glm::vec3(0,-1.5, - i * 113));
             CentralBuilding->Scale(glm::vec3(1,1,1)*0.5f);
             
-            game::SceneNode* Road2 = CreateInstance("landing1", "Rd1", "RoadNoir", "RockyTexture");
-            game::SceneNode* Road3 = CreateInstance("landing2", "Rd1", "RoadNoir", "RockyTexture");
-            game::SceneNode* Road4 = CreateInstance("landing3", "Rd1", "RoadNoir", "RockyTexture");
+            game::SceneNode* Road2 = CreateInstance("landing1", "Rd1", "RoadNoir", "AsphaltTexture");
+            game::SceneNode* Road3 = CreateInstance("landing2", "Rd1", "RoadNoir", "AsphaltTexture");
+            game::SceneNode* Road4 = CreateInstance("landing3", "Rd1", "RoadNoir", "AsphaltTexture");
             
             Road2->SetPosition(glm::vec3(48,-1, -i * 70));
             Road2->Rotate(glm::quat(1,glm::vec3(0,1,0)));

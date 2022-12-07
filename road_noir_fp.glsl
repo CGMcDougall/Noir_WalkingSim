@@ -20,7 +20,7 @@ float pi = 3.1415926535897932;
 // Grayscale lighting with a slight blue ambient hue (nighttime is never pure black)
 vec3 diffuse_color = vec3(0.2, 0.2, 0.2);
 vec3 specular_color = vec3(1.0, 0.8, 0.2);
-vec3 ambient_color = vec3(0.05, 0.05, 0.8);
+vec3 ambient_color = vec3(0.05, 0.05, 0.06);
 
 float roughness = 0.5;
 float light_intensity = 1.0*pi;
