@@ -54,6 +54,7 @@ void Game::Init(void){
     // Set variables
     animating_ = true;
     blur_ = false;
+    noir_ = true;
 
   /*  try {
         am.Init(NULL);
@@ -241,16 +242,18 @@ void Game::SetupResources(void){
     // Load material for screen-space effect
     filename = std::string(MATERIAL_DIRECTORY) + std::string("/screen_space");
     resman_.LoadResource(Material, "ScreenSpaceMaterial", filename.c_str());
+    filename = std::string(MATERIAL_DIRECTORY) + std::string("/noir_filter");
+    resman_.LoadResource(Material, "NoirFilter", filename.c_str());
 
 
     // Create particles
     resman_.CreateRainParticles("RainParticles");
     
-    // Setup drawing to texture
-    scene_.SetupDrawToTexture();
-
+  
     resman_.CreateSmokeParticles("SmokeParticles");
     
+    // Setup drawing to texture
+    scene_.SetupDrawToTexture();
 }
 
 
@@ -348,7 +351,23 @@ void Game::MainLoop(void){
             }
         }
 
-        if (blur_) {
+
+        if (noir_) {
+            // Draw the scene to a texture
+            scene_.DrawToTexture(&camera_);
+
+            // Save the texture to a file for debug
+            /*static int first = 1;
+            if (first){
+                scene_.SaveTexture("texture.ppm");
+                first = 0;
+            }*/
+
+            // Process the texture with a screen-space effect and display
+            // the texture
+            scene_.DisplayTexture(resman_.GetResource("NoirFilter")->GetResource());
+        }
+        else if (blur_) {
             // Draw the scene to a texture
             scene_.DrawToTexture(&camera_);
 

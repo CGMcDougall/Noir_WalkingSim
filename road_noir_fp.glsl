@@ -98,12 +98,7 @@ void main()
 
     for(int i = 0; i < lamp_light_interp.length(); i++)illum += lightCalc(lamp_light_interp[i]);
 
-    // How "grey" it is
-    float greyFactor = 1.0;
-
-    // Modify the texture lookups to be greyer
-    float grey = 0.21 * pixel.r + 0.71 * pixel.g + 0.07 * pixel.b;
-    gl_FragColor = vec4(pixel.rgb * (1.0 - greyFactor) + (grey * greyFactor), pixel.a) * vec4(illum, 1.0);
+    gl_FragColor = vec4(pixel) * vec4(illum, 1.0);
     
 }
 

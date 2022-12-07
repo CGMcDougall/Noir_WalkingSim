@@ -172,6 +172,8 @@ void SceneGraph::DrawToTexture(Camera *camera){
 
     // Draw all scene nodes
     for (int i = 0; i < node_.size(); i++){
+        node_[i]->setLightSources(lightSource);
+        node_[i]->setDirectionalLightSources(directionalLightSource);
         node_[i]->Draw(camera);
     }
 

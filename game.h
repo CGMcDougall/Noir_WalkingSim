@@ -72,6 +72,9 @@ namespace game {
             // Flag to turn visual blur on/off
             bool blur_;
 
+            // Flag to turn noir filter on/off
+            bool noir_;
+
             // Methods to initialize the game
             void InitWindow(void);
             void InitView(void);
