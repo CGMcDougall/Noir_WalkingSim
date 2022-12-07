@@ -253,12 +253,9 @@ void SceneNode::SetupShader(GLuint program){
     }
     
     // THIS NUMBER NEEDS TO BE 3 * THE NUMBER OF LAMPS. IT'S REALLY REALLY IMPORTANT
-    // WHEN YOU CHANGE THIS NUMBER, ALSO UPDATE EVERY SHADER AND INCREASE lampLightPos[n] AND lamp_light_interp TO n+1
+    // WHEN YOU CHANGE THIS NUMBER, ALSO UPDATE EVERY SHADER AND INCREASE lampLightPos[n] TO n+1
     float lampP[3];
-
-    // THIS NUMBER HAS TO BE THE NUMBER OF LIGHTS
-    int l = 1;
-    for (int i = 0; i < l; i++) {
+    for (int i = 0; i < 0; i++) {
         lampP[i*3] = lampLightPos.at(i).x;
         lampP[i*3+1] = lampLightPos.at(i).y;
         lampP[i*3+2] = lampLightPos.at(i).z;
