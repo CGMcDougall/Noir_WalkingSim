@@ -36,8 +36,6 @@ glm::vec3 camera_up_g(0.0, 1.0, 0.0);
 // Materials 
 const std::string material_directory_g = MATERIAL_DIRECTORY;
 
-Cigarette *Game::Cig = NULL;
-
 Game::Game(void){
 
     // Don't do work in the constructor, leave it for the Init() function
@@ -180,14 +178,12 @@ void Game::SetupResources(void){
 
     resman_.CreateCylinder("BranchCylinder", BRANCH_LENGTH, 0.4, 10, 10);
 
-    resman_.CreateCylinder("SkyBox", 2.0, 1.0, 2, 4);
+    resman_.CreateCube("Cube");
 
     // Misc Objects
     filename = std::string(MATERIAL_DIRECTORY) + std::string("\\Assets/Cig/Cig.obj");
     resman_.LoadResource(Mesh, "Cig", filename.c_str());
 
-
- 
 
     // Building Objects
    /*filename = std::string(MATERIAL_DIRECTORY) + std::string("\\Assets/Building.obj");
@@ -238,8 +234,6 @@ void Game::SetupResources(void){
     resman_.LoadResource(Texture, "LampTexture", filename.c_str());
 
     
-
-
   /*  filename = std::string(MATERIAL_DIRECTORY) + std::string("\\Assets/Body_Metallic1.png");
     resman_.LoadResource(Texture, "Car1Text", filename.c_str());*/
 
@@ -262,8 +256,7 @@ void Game::SetupResources(void){
     // Create particles
     resman_.CreateRainParticles("RainParticles");
     
-  
-    resman_.CreateSmokeParticles("SmokeParticles");
+    resman_.CreateSmokeParticles("SmokeParticles", 4000);
     
     // Setup drawing to texture
     scene_.SetupDrawToTexture();
@@ -275,10 +268,15 @@ void Game::SetupScene(void){
     // Set background color for the scene
     scene_.SetBackgroundColor(viewport_background_color_g);
 
+    game::SceneNode* playerHead = CreateInstance("PlayerHead", "Cube", "Metal");
+
     //CreateTree(3, glm::vec3(0, 2.5, 0));
 
     // Create particles
-    game::SceneNode *node = CreateInstance("RainInstance", "RainParticles", "RainMaterial");
+    game::SceneNode* rainParticles = CreateInstance("RainInstance", "RainParticles", "RainMaterial");
+
+    
+
 
     // Create skybox
     /*node = CreateInstance("SkyBox", "SkyBox", "Noir", "NightTexture");
@@ -297,21 +295,22 @@ void Game::SetupScene(void){
     Building2->SetPosition(glm::vec3(-20, 0, -20));
     Building2->SetScale(glm::vec3(1, 1, 1)*8.0f);*/
 
-    //game::SceneNode* smoke1 = CreateInstance("Smoke1", "SmokeParticles", "Cigarette", "SmokeText");
-    //smoke1->SetPosition(glm::vec3(-1, 0, 0));
-
    /* am.SetSoundPosition(rainIndex, 0.0f, 0.0f, 0.0f);
     am.SetLoop(rainIndex, true);
     am.PlaySound(rainIndex);*/
    
 
     game::Cigarette* cig = CreateCigaretteInstance("Cigarette", "Cig", "Noir", "CigText");
-    //cig->giveSmokeParticle(smoke1);
-    glm::vec3 pos = camera_.GetPosition();
-    cig->SetJoint(glm::vec3(pos.x + 0.1, pos.y - 0.1, pos.z - 0.7));
-    cig->SetPosition(glm::vec3(pos.x + 0.1, pos.y - 0.1, pos.z - 0.7));
-    Cig = cig;
+    cig->SetPosition(glm::vec3(0, -0.11, -0.5));
+    cig->SetParent(playerHead);
+    playerHead->AddChild(cig);
     
+    game::SceneNode* smokeParticles = CreateInstance("SmokeInstance", "SmokeParticles", "Cigarette", "SmokeText");
+    smokeParticles->SetScale(glm::vec3(0.01));
+    smokeParticles->SetPosition(glm::vec3(0.04, 0.01, -0.2));
+    smokeParticles->SetParent(cig);
+    cig->AddChild(smokeParticles);
+
     CreateRoad(2);
 
 }
@@ -336,23 +335,12 @@ void Game::MainLoop(void){
 
         //scene_.AddLightSource(camera_.GetPosition(), 0);
 
-        SceneNode* n = scene_.GetNode("Cigarette");
-        glm::vec3 playerPos = camera_.GetPosition();
-        playerPos = glm::vec3(playerPos.x + 0.1, playerPos.y - 0.1, playerPos.z - 0.7);
-        n->SetPosition(playerPos);
-        //n->SetOrientation(camera_.GetOrientation());
-        //n->Rotate(camera_.GetOrientation());
-
-       glm::vec3 pos = glm::vec3(0, 0, 1);
-
-        Cigarette* c = (Cigarette*)n;
-        //n->Orbit(pos, glm::quat(0.00001f,glm::vec3(0,1,0)));
+        SceneNode* playerHead = scene_.GetNode("PlayerHead");
+        playerHead->SetPosition(camera_.GetPosition());
+        playerHead->SetOrientation(camera_.GetOrientation());
         
-        c->SetJoint(pos);
-        //c->SetJoint(camera_.GetPosition());
-        
-        n = scene_.GetNode("RainInstance");
-        n->SetPosition(camera_.GetPosition());
+        SceneNode* rainNode = scene_.GetNode("RainInstance");
+        rainNode->SetPosition(camera_.GetPosition());
 
         
         if (animating_) {
@@ -444,15 +432,6 @@ void Game::CursorCallback(GLFWwindow* window, double xPos, double yPos) {
 
     glm::vec3 pos = game->camera_.GetPosition();
     pos = glm::vec3(pos.x + 0.1, pos.y - 0.1, pos.z - 0.7);
-    //s = glm::vec3(0, 0, 1);
-    //std::cout << glm::to_string(glm::mat4_cast(r)) << std::endl;
-
-    //Cig->Orbit(pos,game->camera_.GetOrientation());
-    Cig->Orbit(pos, r);
-    //Cig->SetPosition(pos);
-    Cig->SetOrientation(game->camera_.GetOrientation());
-    //Cig->Update();
-    //Cig->Rotate(r);
 
     glfwSetCursorPos(window, 0, 0);
     
@@ -497,10 +476,6 @@ void Game::KeyCallback(GLFWwindow* window, int key, int scancode, int action, in
     if (key == GLFW_KEY_B) {
         game->blur_ = !game->blur_;
     }
-
-
-
-
 }
 
 
@@ -568,31 +543,10 @@ Cigarette* Game::CreateCigaretteInstance(std::string entity_name, std::string ob
             throw(GameException(std::string("Could not find resource \"") + material_name + std::string("\"")));
         }
     }
-    // Get resources for Smoke
-    Resource* sGeom = resman_.GetResource("SmokeParticles");
-    if (!geom) {
-        throw(GameException(std::string("Could not find resource \"") + object_name + std::string("\"")));
-    }
 
-    Resource* sMat = resman_.GetResource("Cigarette");
-    if (!mat) {
-        throw(GameException(std::string("Could not find resource \"") + material_name + std::string("\"")));
-    }
-
-    Resource* sTex = NULL;
-    if (texture_name != "") {
-        tex = resman_.GetResource("SmokeText");
-        if (!tex) {
-            throw(GameException(std::string("Could not find resource \"") + material_name + std::string("\"")));
-        }
-    }
-
-    SceneNode* smoke = new SceneNode("smoke",sGeom, sMat, sTex);
-
-    // Create streetlamp instance
+    // Create cigarette instance
     Cigarette *cig = new Cigarette(entity_name, geom, mat,tex);
     scene_.AddNode(cig);
-    cig->giveSmokeParticle(smoke);
     return cig;
 }
 
@@ -681,8 +635,6 @@ void Game::CreateRoad(int num_roads) {
             scene_.AddDirectionalLight((StreetLamp->GetPosition() + StreetLamp->getLightPos()));
 
         }
-
-
     }
 }
 

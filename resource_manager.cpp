@@ -562,10 +562,6 @@ void ResourceManager::LoadTexture(const std::string name, const char *filename){
         throw(std::ios_base::failure(std::string("Error loading texture ")+std::string(filename)+std::string(": ")+std::string(SOIL_last_result())));
     }
 
-    if (name == "TileableBrickTexture") {
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
-    }
-
     // Create resource
     AddResource(Texture, name, texture, 0);
 }
