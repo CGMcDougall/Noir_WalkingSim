@@ -22,7 +22,7 @@ vec3 diffuse_color = vec3(0.2, 0.2, 0.2);
 vec3 specular_color = vec3(1.0, 0.8, 0.2);
 vec3 ambient_color = vec3(0.05, 0.05, 0.06);
 
-float roughness = 0.5;
+float roughness = 0.3;
 float light_intensity = 1.0*pi;
 
 
@@ -94,7 +94,7 @@ void main()
 
     
     vec3 illum = vec3(0,0,0);
-    vec4 pixel = texture(texture_map, vertex_uv);
+    vec4 pixel = texture(texture_map, vertex_uv*2);
 
     for(int i = 0; i < lamp_light_interp.length(); i++)illum += lightCalc(lamp_light_interp[i]);
 

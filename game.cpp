@@ -29,8 +29,8 @@ float camera_near_clip_distance_g = 0.01;
 float camera_far_clip_distance_g = 1000.0;
 float camera_fov_g = 20.0; // Field-of-view of camera
 const glm::vec3 viewport_background_color_g(0.0, 0.0, 0.0);
-glm::vec3 camera_position_g(0.5, 0.5, 10.0);
-glm::vec3 camera_look_at_g(0.0, 0.0, 0.0);
+glm::vec3 camera_position_g(0.5, 5.0, 20.0);
+glm::vec3 camera_look_at_g(0.0, 5.0, 0.0);
 glm::vec3 camera_up_g(0.0, 1.0, 0.0);
 
 // Materials 
@@ -234,12 +234,14 @@ void Game::SetupResources(void){
     filename = std::string(MATERIAL_DIRECTORY) + std::string("\\Assets/asphalt.png");
     resman_.LoadResource(Texture, "AsphaltTexture", filename.c_str());
 
+    filename = std::string(MATERIAL_DIRECTORY) + std::string("\\Assets/Street_Lamp_Textures/Fasce_Lampada_SH_BaseColor.png");
+    resman_.LoadResource(Texture, "LampTexture", filename.c_str());
+
+    
+
 
   /*  filename = std::string(MATERIAL_DIRECTORY) + std::string("\\Assets/Body_Metallic1.png");
     resman_.LoadResource(Texture, "Car1Text", filename.c_str());*/
-
-    /*filename = std::string(MATERIAL_DIRECTORY) + std::string("\\Assets/BrickBuildText.png");
-    resman_.LoadResource(Texture, "BrickText", filename.c_str());*/
 
     /*filename = std::string(MATERIAL_DIRECTORY) + std::string("\\Assets/nightSkyBox.png");
     resman_.LoadResource(Texture, "NightTexture", filename.c_str());*/
@@ -534,12 +536,12 @@ Streetlamp* Game::CreateStreetlampInstance(std::string entity_name, std::string 
     if (texture_name != "") {
         tex = resman_.GetResource(texture_name);
         if (!tex) {
-            throw(GameException(std::string("Could not find resource \"") + material_name + std::string("\"")));
+            throw(GameException(std::string("Could not find resource \"") + texture_name + std::string("\"")));
         }
     }
 
     // Create streetlamp instance
-    Streetlamp* streetlamp = new Streetlamp(entity_name, geom, mat);
+    Streetlamp* streetlamp = new Streetlamp(entity_name, geom, mat, tex);
     scene_.AddNode(streetlamp);
     streetlamps_.push_back(streetlamp);
     return streetlamp;
@@ -636,8 +638,6 @@ void Game::CreateRoad(int num_roads) {
 
         }
 
-        // Set attributes of asteroid: random position, orientation, and
-        // angular momentum
         Road->SetPosition(glm::vec3(0, -1,-i * 49));
         
         if (i == num_roads - 1) {
@@ -663,7 +663,7 @@ void Game::CreateRoad(int num_roads) {
             std::string lampname = "LampInstance" + index;
 
             //Street Lamps
-            Streetlamp* StreetLamp = CreateStreetlampInstance(lampname, "streetlamp", "RoadNoir", "GreenTexture");
+            Streetlamp* StreetLamp = CreateStreetlampInstance(lampname, "streetlamp", "RoadNoir", "LampTexture");
             StreetLamp->SetScale(glm::vec3(.33f, 1, .33f));
             if (left) {
                 StreetLamp->SetPosition(glm::vec3(-9, -1, -i * 48));

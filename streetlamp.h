@@ -19,7 +19,7 @@ namespace game {
 
     public:
         // Create streetlamp from given resources
-        Streetlamp(const std::string name, const Resource* geometry, const Resource* material);
+        Streetlamp(const std::string name, const Resource* geometry, const Resource* material, const Resource* texture);
 
         // Destructor
         ~Streetlamp();
