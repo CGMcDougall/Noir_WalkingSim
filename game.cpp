@@ -158,6 +158,11 @@ void Game::SetupResources(void){
     filename = std::string(MATERIAL_DIRECTORY) + std::string("\\metal");
     resman_.LoadResource(Material, "Metal", filename.c_str());
 
+    filename = std::string(MATERIAL_DIRECTORY) + std::string("\\tiled_brick");
+    resman_.LoadResource(Material, "TiledBrick", filename.c_str());
+
+
+
 
     // Environment Objects
     filename = std::string(MATERIAL_DIRECTORY) + std::string("\\Assets/StraightRoad1.obj");
@@ -225,6 +230,9 @@ void Game::SetupResources(void){
     filename = std::string(MATERIAL_DIRECTORY) + std::string("\\Assets/GreenTempText.png");
     resman_.LoadResource(Texture, "GreenTexture", filename.c_str());
 
+    filename = std::string(MATERIAL_DIRECTORY) + std::string("\\Assets/tileableBrick.png");
+    resman_.LoadResource(Texture, "TileableBrickTexture", filename.c_str());
+
   /*  filename = std::string(MATERIAL_DIRECTORY) + std::string("\\Assets/Body_Metallic1.png");
     resman_.LoadResource(Texture, "Car1Text", filename.c_str());*/
 
@@ -242,6 +250,7 @@ void Game::SetupResources(void){
     // Load material for screen-space effect
     filename = std::string(MATERIAL_DIRECTORY) + std::string("/screen_space");
     resman_.LoadResource(Material, "ScreenSpaceMaterial", filename.c_str());
+
     filename = std::string(MATERIAL_DIRECTORY) + std::string("/noir_filter");
     resman_.LoadResource(Material, "NoirFilter", filename.c_str());
 
@@ -626,14 +635,14 @@ void Game::CreateRoad(int num_roads) {
 
             float buildingScale = 3;
 
-            game::SceneNode* Building1 = CreateInstance(buildingName1, "OldHouse", "RoadNoir","GreenTexture");
+            game::SceneNode* Building1 = CreateInstance(buildingName1, "OldHouse", "TiledBrick","TileableBrickTexture");
            
             Building1->SetScale(glm::vec3(.1, .1, .1) * buildingScale);
             Building1->Rotate(glm::quat(-1.0f, glm::vec3(0, 1, 0)));
             Building1->SetPosition(glm::vec3(-34, -1, (-17 * i) - 22));
 
 
-            game::SceneNode* Building2 = CreateInstance(buildingName2, "OldHouse", "RoadNoir", "GreenTexture");
+            game::SceneNode* Building2 = CreateInstance(buildingName2, "OldHouse", "TiledBrick", "TileableBrickTexture");
             Building2->SetScale(glm::vec3(.1, .1, .1) * buildingScale);
             Building2->Rotate(glm::quat(1.0f, glm::vec3(0, 1, 0)));
             Building2->SetPosition(glm::vec3(34, -1, (-17 * i)-22));

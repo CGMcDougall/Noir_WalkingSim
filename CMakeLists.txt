@@ -13,7 +13,7 @@ set(SRCS
    asteroid.cpp camera.cpp game.cpp main.cpp resource.cpp resource_manager.cpp scene_graph.cpp scene_node.cpp cig.cpp 
    material_fp.glsl material_vp.glsl metal_fp.glsl metal_vp.glsl plastic_fp.glsl plastic_vp.glsl textured_material_fp.glsl textured_material_vp.glsl three-term_shiny_blue_fp.glsl three-term_shiny_blue_vp.glsl 
    normal_map_vp.glsl normal_map_fp.glsl screen_space_vp.glsl screen_space_fp.glsl particle_vp.glsl particle_fp.glsl particle_gp.glsl noir_vp.glsl noir_fp.glsl road_noir_vp.glsl road_noir_fp.glsl streetlamp.cpp 
-   rain_particles_vp.glsl rain_particles_gp.glsl rain_particles_fp.glsl branch.cpp cigarette_fp.glsl cigarette_gp.glsl cigarette_vp.glsl noir_filter_vp.glsl noir_filter_fp.glsl
+   rain_particles_vp.glsl rain_particles_gp.glsl rain_particles_fp.glsl branch.cpp cigarette_fp.glsl cigarette_gp.glsl cigarette_vp.glsl noir_filter_vp.glsl noir_filter_fp.glsl tiled_brick_vp.glsl tiled_brick_fp.glsl
 )
 
 # Add path name to configuration file
