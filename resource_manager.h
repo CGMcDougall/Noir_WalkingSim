@@ -44,6 +44,9 @@ namespace game {
             // Create the geometry for a wall
             void CreateWall(std::string object_name);
 
+            // Create the geometry for a cube
+            void CreateCube(std::string object_name);
+
             // Create particles distributed over a sphere
             void CreateSphereParticles(std::string object_name, int num_particles = 20000);
 

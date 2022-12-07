@@ -8,9 +8,11 @@
 #include <GL/glew.h>
 #include <GLFW/glfw3.h>
 
+/*
 #include <AL/al.h>
 #include <AL/alc.h>
 #include <AL/alut.h>
+*/
 
 #include "scene_graph.h"
 #include "resource_manager.h"
@@ -19,7 +21,7 @@
 #include "streetlamp.h"
 #include "branch.h"
 #include "cig.h"
-#include "audio_manager.h"
+//#include "audio_manager.h"
 
 namespace game {
 

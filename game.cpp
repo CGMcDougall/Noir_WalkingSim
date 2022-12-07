@@ -176,6 +176,7 @@ void Game::SetupResources(void){
 
     resman_.CreateCylinder("BranchCylinder", BRANCH_LENGTH, 0.4, 10, 10);
 
+    resman_.CreateCylinder("SkyBox", 2.0, 1.0, 2, 4);
 
     // Misc Objects
     filename = std::string(MATERIAL_DIRECTORY) + std::string("\\Assets/Cig/Cig.obj");
@@ -185,10 +186,10 @@ void Game::SetupResources(void){
  
 
     // Building Objects
-   /* filename = std::string(MATERIAL_DIRECTORY) + std::string("\\Assets/Building.obj");
+   /*filename = std::string(MATERIAL_DIRECTORY) + std::string("\\Assets/Building.obj");
     resman_.LoadResource(Mesh, "Building2", filename.c_str());*/
 
- /*   filename = std::string(MATERIAL_DIRECTORY) + std::string("\\Assets/Building1.obj");
+    filename = std::string(MATERIAL_DIRECTORY) + std::string("\\Assets/Building1.obj");
     resman_.LoadResource(Mesh, "OldHouse", filename.c_str());
 
     filename = std::string(MATERIAL_DIRECTORY) + std::string("\\Assets/Buildings/Building2.obj");
@@ -198,7 +199,7 @@ void Game::SetupResources(void){
     resman_.LoadResource(Mesh, "B3", filename.c_str());
 
     filename = std::string(MATERIAL_DIRECTORY) + std::string("\\Assets/Buildings/CentralBuilding.obj");
-    resman_.LoadResource(Mesh, "centralBuilding", filename.c_str());*/
+    resman_.LoadResource(Mesh, "centralBuilding", filename.c_str());
 
 
     // Textures
@@ -229,6 +230,9 @@ void Game::SetupResources(void){
     /*filename = std::string(MATERIAL_DIRECTORY) + std::string("\\Assets/BrickBuildText.png");
     resman_.LoadResource(Texture, "BrickText", filename.c_str());*/
 
+    /*filename = std::string(MATERIAL_DIRECTORY) + std::string("\\Assets/nightSkyBox.png");
+    resman_.LoadResource(Texture, "NightTexture", filename.c_str());*/
+
 
     //auido .wav file
     filename = std::string(MATERIAL_DIRECTORY).append("\\Assets/rain.wav");
@@ -258,7 +262,12 @@ void Game::SetupScene(void){
     //CreateTree(3, glm::vec3(0, 2.5, 0));
 
     // Create particles
-    game::SceneNode *particles = CreateInstance("RainInstance", "RainParticles", "RainMaterial");
+    game::SceneNode *node = CreateInstance("RainInstance", "RainParticles", "RainMaterial");
+
+    // Create skybox
+    /*node = CreateInstance("SkyBox", "SkyBox", "Noir", "NightTexture");
+    node->SetScale(glm::vec3(100));
+    node->SetPosition(glm::vec3(0));*/
 
 
     //game::SceneNode *Car = CreateInstance("Car1", "car", "Noir");
@@ -287,7 +296,7 @@ void Game::SetupScene(void){
     cig->SetPosition(glm::vec3(pos.x + 0.1, pos.y - 0.1, pos.z - 0.7));
     Cig = cig;
     
-    //CreateRoad(2);
+    CreateRoad(2);
 
 }
 
@@ -455,42 +464,6 @@ void Game::KeyCallback(GLFWwindow* window, int key, int scancode, int action, in
     // View control
     float rot_factor(glm::pi<float>() / 180);
     float trans_factor = 1.0;
-   /* if (key == GLFW_KEY_UP){
-        game->camera_.Pitch(rot_factor);
-    }
-    if (key == GLFW_KEY_DOWN){
-        game->camera_.Pitch(-rot_factor);
-    }
-    if (key == GLFW_KEY_LEFT){
-        game->camera_.Yaw(rot_factor);
-    }
-    if (key == GLFW_KEY_RIGHT){
-        game->camera_.Yaw(-rot_factor);
-    }
-    if (key == GLFW_KEY_S){
-        game->camera_.Roll(-rot_factor);
-    }
-    if (key == GLFW_KEY_X){
-        game->camera_.Roll(rot_factor);
-    }
-    if (key == GLFW_KEY_A){
-        game->camera_.Translate(game->camera_.GetForward()*trans_factor);
-    }
-    if (key == GLFW_KEY_Z){
-        game->camera_.Translate(-game->camera_.GetForward()*trans_factor);
-    }
-    if (key == GLFW_KEY_J){
-        game->camera_.Translate(-game->camera_.GetSide()*trans_factor);
-    }
-    if (key == GLFW_KEY_L){
-        game->camera_.Translate(game->camera_.GetSide()*trans_factor);
-    }
-    if (key == GLFW_KEY_I){
-        game->camera_.Translate(game->camera_.GetUp()*trans_factor);
-    }
-    if (key == GLFW_KEY_K){
-        game->camera_.Translate(-game->camera_.GetUp()*trans_factor);
-    }*/
 
     if (key == GLFW_KEY_W) {
         game->camera_.Translate(forwardVec * trans_factor);
@@ -528,9 +501,6 @@ Game::~Game(){
     
     glfwTerminate();
 }
-
-
-
 
 
 Streetlamp* Game::CreateStreetlampInstance(std::string entity_name, std::string object_name, std::string material_name, std::string texture_name) {
@@ -627,7 +597,7 @@ void Game::CreateRoad(int num_roads) {
         std::string roadname = "RoadInstance" + index;
 
         // Create road instance
-        game::SceneNode* Road = CreateInstance(roadname, "Rd1", "RoadNoir");
+        game::SceneNode* Road = CreateInstance(roadname, "Rd1", "RoadNoir", "RockyTexture");
 
         if (third) {
             //Buildings
@@ -637,14 +607,14 @@ void Game::CreateRoad(int num_roads) {
 
             float buildingScale = 3;
 
-            game::SceneNode* Building1 = CreateInstance(buildingName1, "OldHouse", "RoadNoir","");
+            game::SceneNode* Building1 = CreateInstance(buildingName1, "OldHouse", "RoadNoir","GreenTexture");
            
             Building1->SetScale(glm::vec3(.1, .1, .1) * buildingScale);
             Building1->Rotate(glm::quat(-1.0f, glm::vec3(0, 1, 0)));
             Building1->SetPosition(glm::vec3(-34, -1, (-17 * i) - 22));
 
 
-            game::SceneNode* Building2 = CreateInstance(buildingName2, "OldHouse", "RoadNoir", "");
+            game::SceneNode* Building2 = CreateInstance(buildingName2, "OldHouse", "RoadNoir", "GreenTexture");
             Building2->SetScale(glm::vec3(.1, .1, .1) * buildingScale);
             Building2->Rotate(glm::quat(1.0f, glm::vec3(0, 1, 0)));
             Building2->SetPosition(glm::vec3(34, -1, (-17 * i)-22));
@@ -656,13 +626,13 @@ void Game::CreateRoad(int num_roads) {
         Road->SetPosition(glm::vec3(0, -1,-i * 49));
         
         if (i == num_roads - 1) {
-            game::SceneNode* CentralBuilding = CreateInstance("CentralBuilding", "centralBuilding", "RoadNoir");
+            game::SceneNode* CentralBuilding = CreateInstance("CentralBuilding", "centralBuilding", "RoadNoir", "GreenTexture");
             CentralBuilding->SetPosition(glm::vec3(0,-1.5, - i * 113));
             CentralBuilding->Scale(glm::vec3(1,1,1)*0.5f);
             
-            game::SceneNode* Road2 = CreateInstance("landing1", "Rd1", "RoadNoir", "");
-            game::SceneNode* Road3 = CreateInstance("landing2", "Rd1", "RoadNoir", "");
-            game::SceneNode* Road4 = CreateInstance("landing3", "Rd1", "RoadNoir", "");
+            game::SceneNode* Road2 = CreateInstance("landing1", "Rd1", "RoadNoir", "RockyTexture");
+            game::SceneNode* Road3 = CreateInstance("landing2", "Rd1", "RoadNoir", "RockyTexture");
+            game::SceneNode* Road4 = CreateInstance("landing3", "Rd1", "RoadNoir", "RockyTexture");
             
             Road2->SetPosition(glm::vec3(48,-1, -i * 70));
             Road2->Rotate(glm::quat(1,glm::vec3(0,1,0)));
@@ -678,7 +648,7 @@ void Game::CreateRoad(int num_roads) {
             std::string lampname = "LampInstance" + index;
 
             //Street Lamps
-            Streetlamp* StreetLamp = CreateStreetlampInstance(lampname, "streetlamp", "RoadNoir", "");
+            Streetlamp* StreetLamp = CreateStreetlampInstance(lampname, "streetlamp", "RoadNoir", "GreenTexture");
             StreetLamp->SetScale(glm::vec3(.33f, 1, .33f));
             if (left) {
                 StreetLamp->SetPosition(glm::vec3(-9, -1, -i * 48));

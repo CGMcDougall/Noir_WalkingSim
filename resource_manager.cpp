@@ -566,7 +566,6 @@ void ResourceManager::LoadTexture(const std::string name, const char *filename){
     AddResource(Texture, name, texture, 0);
 }
 
-
 void ResourceManager::LoadMesh(const std::string name, const char *filename){
 
     // First load model into memory. If that goes well, we transfer the
@@ -957,6 +956,54 @@ void ResourceManager::CreateWall(std::string object_name){
     AddResource(Mesh, object_name, vbo, ebo, 2 * 3);
 }
 
+void ResourceManager::CreateCube(std::string object_name) {
+    // Definition
+    // A skybox is simply a cube formed with two triangles per face
+    GLfloat vertex[] = {
+        -1.0f,  -1.0f,  1.0f,
+         1.0f,  -1.0f,  1.0f,
+         1.0f,  -1.0f, -1.0f,
+        -1.0f,  -1.0f, -1.0f,
+        -1.0f,   1.0f,  1.0f,
+         1.0f,   1.0f,  1.0f,
+         1.0f,   1.0f, -1.0f,
+        -1.0f,   1.0f, -1.0f
+    };
+
+    GLuint faces[] = {
+        1, 2, 6,
+        6, 5, 1,
+
+        0, 4, 7,
+        7, 3, 0,
+
+        4, 5, 6,
+        6, 7, 4,
+
+        0, 3, 2,
+        2, 1, 0,
+
+        0, 1, 5,
+        5, 4, 0,
+
+        3, 7, 6,
+        6, 2, 3
+    };
+
+    // Create OpenGL buffers and copy data
+    GLuint vbo, ebo;
+
+    glGenBuffers(1, &vbo);
+    glBindBuffer(GL_ARRAY_BUFFER, vbo);
+    glBufferData(GL_ARRAY_BUFFER, 4 * 11 * sizeof(GLfloat), vertex, GL_STATIC_DRAW);
+
+    glGenBuffers(1, &ebo);
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ebo);
+    glBufferData(GL_ELEMENT_ARRAY_BUFFER, 2 * 3 * sizeof(GLuint), faces, GL_STATIC_DRAW);
+
+    // Create resource
+    AddResource(Mesh, object_name, vbo, ebo, 2 * 3);
+}
 
 void ResourceManager::CreateSphereParticles(std::string object_name, int num_particles){
 

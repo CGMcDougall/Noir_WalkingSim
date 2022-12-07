@@ -4,10 +4,11 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-
+/*
 #include <AL/al.h>
 #include <AL/alc.h>
 #include <AL/alut.h>
+*/
 
 #include <exception>
 #include <iostream>
