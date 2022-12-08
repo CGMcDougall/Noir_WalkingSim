@@ -487,6 +487,16 @@ void Game::KeyCallback(GLFWwindow* window, int key, int scancode, int action, in
     if (key == GLFW_KEY_B) {
         game->blur_ = !game->blur_;
     }
+
+    std::cout << glm::to_string(game->camera_.GetPosition()) << std::endl;
+
+    glm::vec3 pos = game->camera_.GetPosition();
+    if (pos.x < -8 && (pos.z > -205 || pos.z < -225))pos.x = -8;
+    if (pos.x > 9 && (pos.z > -188 || pos.z < -225))pos.x = 9;
+    if (pos.z > 20)pos.z = 20;
+    if (pos.z < -225)pos.z = -225;
+    
+    game->camera_.SetPosition(pos);
 }
 
 
@@ -583,7 +593,7 @@ void Game::CreateRoad(int num_roads) {
 
         Road->SetPosition(glm::vec3(0, -1, -i * 49));
 
-        std::cout << glm::to_string(Road->GetPosition()) << std::endl;
+        //std::cout << glm::to_string(Road->GetPosition()) << std::endl;
 
         if (third) {
             //Buildings
@@ -679,7 +689,7 @@ void Game::CreateBuildings(glm::vec3 initPos, float room) {
 
     float nextSpot = initPos.z;
     
-    std::cout << "proc once" << std::endl;
+    //std::cout << "proc once" << std::endl;
   
 
     int index = 0;
@@ -735,7 +745,7 @@ void Game::CreateBuildings(glm::vec3 initPos, float room) {
 
 
         index++;
-        std::cout << "made new building" << std::endl;
+        //std::cout << "made new building" << std::endl;
 
         //disable later
         if (index > 10)break;
