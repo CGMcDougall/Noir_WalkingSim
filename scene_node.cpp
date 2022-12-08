@@ -275,10 +275,9 @@ void SceneNode::SetupShader(GLuint program){
     glm::mat4 rotation = glm::mat4_cast(orientation_);
     glm::mat4 translation = glm::translate(glm::mat4(1.0), position_);
     glm::mat4 orbit = glm::translate(glm::mat4(1.0), -orbit_position_) * glm::mat4_cast(orbit_rotation_) * glm::translate(glm::mat4(1.0), orbit_position_);
-    transf_ = parent_transforms * translation * orbit * rotation * scaling; // why this sequence?
+    transf_ = parent_transforms * translation * orbit * rotation * scaling;
 
     
-
     glm::mat4 transf = translation *orbit* rotation * scaling;
 
     GLint world_mat = glGetUniformLocation(program, "world_mat");

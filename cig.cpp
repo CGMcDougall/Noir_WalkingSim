@@ -21,12 +21,6 @@ namespace game {
 	}
 
 	void Cigarette::Update() {
-
-		glm::vec3 pos = glm::vec3(GetPosition().x + 0.012, GetPosition().y + 0.025, GetPosition().z - 0.05);
-
-		smoke->SetJoint(pos);
-		smoke->SetPosition(pos);
-		//smoke->Orbit(pos,GetOrientation());
 	}
 
 	void Cigarette::Draw(Camera* cam) {
@@ -36,14 +30,11 @@ namespace game {
 
 	void Cigarette::SetPosition(glm::vec3 p) {
 		position_ = p;
-		//joint_ = p;
 	}
 
 
 	void Cigarette::SetJoint(glm::vec3 j) {
 		joint_ = j;
-
-
 	}
 
 
