@@ -36,6 +36,8 @@ glm::vec3 camera_up_g(0.0, 1.0, 0.0);
 // Materials 
 const std::string material_directory_g = MATERIAL_DIRECTORY;
 
+//Cigarette* game::Cig = NULL;
+
 Game::Game(void){
 
     // Don't do work in the constructor, leave it for the Init() function
@@ -305,7 +307,7 @@ void Game::SetupScene(void){
     glm::vec3 pos = camera_.GetPosition();
     cig->SetJoint(glm::vec3(pos.x + 0.1, pos.y - 0.1, pos.z - 0.7));
     cig->SetPosition(glm::vec3(pos.x + 0.1, pos.y - 0.1, pos.z - 0.7));
-    Cig = cig;
+    //Cig = cig;
     
     CreateRoad(5);
     cig->SetPosition(glm::vec3(0, -0.11, -0.5));
@@ -318,7 +320,7 @@ void Game::SetupScene(void){
     smokeParticles->SetParent(cig);
     cig->AddChild(smokeParticles);
 
-    CreateRoad(2);
+    CreateRoad(5);
 
 }
 

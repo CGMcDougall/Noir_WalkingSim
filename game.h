@@ -92,7 +92,7 @@ namespace game {
 
             // Creates a street environment at a location based on a template
             Cigarette* Game::CreateCigaretteInstance(std::string entity_name, std::string object_name, std::string material_name, std::string texture_name);
-            static Cigarette* Cig;
+            //static Cigarette* Cig;
 
 
             void CreateRoad(int num_roads = 5);
