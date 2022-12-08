@@ -96,6 +96,8 @@ namespace game {
 
 
             void CreateRoad(int num_roads = 5);
+            //give the initial position of the buildings and how much room you have for them
+            void CreateBuildings(glm::vec3 initPos, float room);
 
             // Tree
             // Create instance of a branch

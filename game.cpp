@@ -312,7 +312,7 @@ void Game::SetupScene(void){
     cig->SetPosition(glm::vec3(pos.x + 0.1, pos.y - 0.1, pos.z - 0.7));
     Cig = cig;
     
-    CreateRoad(2);
+    CreateRoad(5);
 
 }
 
@@ -339,7 +339,7 @@ void Game::MainLoop(void){
         SceneNode* n = scene_.GetNode("Cigarette");
         glm::vec3 playerPos = camera_.GetPosition();
         playerPos = glm::vec3(playerPos.x + 0.1, playerPos.y - 0.1, playerPos.z - 0.7);
-        n->SetPosition(playerPos);
+       // n->SetPosition(playerPos);
         //n->SetOrientation(camera_.GetOrientation());
         //n->Rotate(camera_.GetOrientation());
 
@@ -616,10 +616,14 @@ void Game::CreateRoad(int num_roads) {
         // Create road instance
         game::SceneNode* Road = CreateInstance(roadname, "Rd1", "RoadNoir", "AsphaltTexture");
 
+        Road->SetPosition(glm::vec3(0, -1, -i * 49));
+
+        std::cout << glm::to_string(Road->GetPosition()) << std::endl;
+
         if (third) {
             //Buildings
 
-            std::string buildingName1 = "BuildingInstanceLeft" + index;
+        /*    std::string buildingName1 = "BuildingInstanceLeft" + index;
             std::string buildingName2 = "BuildingInstanceRight" + index;
 
             float buildingScale = 3;
@@ -634,26 +638,33 @@ void Game::CreateRoad(int num_roads) {
             game::SceneNode* Building2 = CreateInstance(buildingName2, "OldHouse", "TiledBrick", "TileableBrickTexture");
             Building2->SetScale(glm::vec3(.1, .1, .1) * buildingScale);
             Building2->Rotate(glm::quat(1.0f, glm::vec3(0, 1, 0)));
-            Building2->SetPosition(glm::vec3(34, -1, (-17 * i)-22));
+            Building2->SetPosition(glm::vec3(34, -1, (-17 * i)-22));*/
+
+            float buildingScale = 9;
+            game::SceneNode* Building = CreateInstance("rightBuildingLong", "B3", "TiledBrick", "TileableBrickTexture");
+            Building->SetScale(glm::vec3(.1, .1, .1) * buildingScale);
+            //Building->Rotate(glm::quat(-1.0f, glm::vec3(0, 1, 0)));
+            Building->SetPosition(glm::vec3(21, -1, -40*i));
 
         }
 
-        Road->SetPosition(glm::vec3(0, -1,-i * 49));
+        
         
         if (i == num_roads - 1) {
             game::SceneNode* CentralBuilding = CreateInstance("CentralBuilding", "centralBuilding", "RoadNoir", "GreenTexture");
-            CentralBuilding->SetPosition(glm::vec3(0,-1.5, - i * 113));
+            CentralBuilding->SetPosition(glm::vec3(0,-1.5, (- i * 49) - 70));
             CentralBuilding->Scale(glm::vec3(1,1,1)*0.5f);
             
             game::SceneNode* Road2 = CreateInstance("landing1", "Rd1", "RoadNoir", "AsphaltTexture");
             game::SceneNode* Road3 = CreateInstance("landing2", "Rd1", "RoadNoir", "AsphaltTexture");
             game::SceneNode* Road4 = CreateInstance("landing3", "Rd1", "RoadNoir", "AsphaltTexture");
             
-            Road2->SetPosition(glm::vec3(48,-1, -i * 70));
+            float zCord = (-i * 49) - 20;
+            Road2->SetPosition(glm::vec3(48,-1, zCord));
             Road2->Rotate(glm::quat(1,glm::vec3(0,1,0)));
-            Road3->SetPosition(glm::vec3(0,-1, -i * 70));
+            Road3->SetPosition(glm::vec3(0,-1, zCord));
             Road3->Rotate(glm::quat(1, glm::vec3(0, 1, 0)));
-            Road4->SetPosition(glm::vec3(-48,-1, -i * 70));
+            Road4->SetPosition(glm::vec3(-48,-1, zCord));
             Road4->Rotate(glm::quat(1, glm::vec3(0, 1, 0)));
 
         }
@@ -684,6 +695,91 @@ void Game::CreateRoad(int num_roads) {
 
 
     }
+
+
+    CreateBuildings(glm::vec3(-34, -1, -10), num_roads * 49);
+    
+ 
+       
+}
+
+
+void Game::CreateBuildings(glm::vec3 initPos, float room) {
+
+    float nextSpot = initPos.z;
+
+    int index = 0;
+    while (abs(nextSpot) +10 < room) {
+        
+        //Set name
+        std::string buildingName;
+        if (initPos.x < 0) buildingName = "BuildingInstanceLeft" + index;
+        else buildingName = "BuildingInstanceRight" + index;
+
+
+        //std::cout << rand() % 3 << std::endl;
+        int r = rand() % 2;
+
+
+        //float buildingScale = 7;
+        //game::SceneNode* Building = CreateInstance(buildingName, "B3", "TiledBrick", "TileableBrickTexture");
+        //Building->SetScale(glm::vec3(.1, .1, .1) * buildingScale);
+        ////Building->Rotate(glm::quat(-1.0f, glm::vec3(0, 1, 0)));
+        //Building->SetPosition(glm::vec3(-23, -1, nextSpot));
+        ////nextSpot -= 29;
+        int notOne = 0;
+        if (index > 0)notOne = 1;
+
+
+        if (r == 1) {
+            float buildingScale = 9;
+            game::SceneNode* Building = CreateInstance(buildingName, "B2", "TiledBrick", "TileableBrickTexture");
+            Building->SetScale(glm::vec3(.1, .1, .1) * buildingScale);
+            Building->Rotate(glm::quat(-1.0f, glm::vec3(0, 1, 0)));
+            Building->SetPosition(glm::vec3(-23, -1, nextSpot - (0*notOne)));
+            nextSpot -= 29;
+        }
+        
+        else {
+            float buildingScale = 3;
+            if (abs(nextSpot - 50) + 10 > room)break;
+            game::SceneNode* Building= CreateInstance(buildingName, "OldHouse", "TiledBrick", "TileableBrickTexture");
+            Building->SetScale(glm::vec3(.1, .1, .1) * buildingScale);
+            Building->Rotate(glm::quat(-1.0f, glm::vec3(0, 1, 0)));
+            Building->SetPosition(glm::vec3(-34, -1, nextSpot- (10 * notOne)));
+            nextSpot -= 50;
+        }
+        
+
+        ////room -= 50;
+        
+
+
+        index++;
+        std::cout << "made new building" << std::endl;
+
+        //disable later
+        if (index > 10)break;
+    }
+
+   
+   /* std::string buildingName1 = "BuildingInstanceLeft" + index;
+    std::string buildingName2 = "BuildingInstanceRight" + index;
+
+    float buildingScale = 3;
+
+    game::SceneNode* Building1 = CreateInstance(buildingName1, "OldHouse", "TiledBrick", "TileableBrickTexture");
+
+    Building1->SetScale(glm::vec3(.1, .1, .1) * buildingScale);
+    Building1->Rotate(glm::quat(-1.0f, glm::vec3(0, 1, 0)));
+    Building1->SetPosition(glm::vec3(-34, -1, (-17 * i) - 22));
+
+
+    game::SceneNode* Building2 = CreateInstance(buildingName2, "OldHouse", "TiledBrick", "TileableBrickTexture");
+    Building2->SetScale(glm::vec3(.1, .1, .1) * buildingScale);
+    Building2->Rotate(glm::quat(1.0f, glm::vec3(0, 1, 0)));
+    Building2->SetPosition(glm::vec3(34, -1, (-17 * i) - 22));*/
+
 }
 
 Branch* Game::CreateBranchInstance(std::string entity_name, std::string object_name, std::string material_name, std::string texture_name, Branch* parent_branch, int depth, int id_in_set, int branch_per_level) {
