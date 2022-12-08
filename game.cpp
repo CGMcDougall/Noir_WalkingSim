@@ -272,7 +272,7 @@ void Game::SetupScene(void){
 
     game::SceneNode* playerHead = CreateInstance("PlayerHead", "Cube", "Metal");
 
-    //CreateTree(3, glm::vec3(0, 2.5, 0));
+    
 
     // Create particles
     game::SceneNode* rainParticles = CreateInstance("RainInstance", "RainParticles", "RainMaterial");
@@ -309,7 +309,7 @@ void Game::SetupScene(void){
     cig->SetPosition(glm::vec3(pos.x + 0.1, pos.y - 0.1, pos.z - 0.7));
     //Cig = cig;
     
-    CreateRoad(5);
+    //CreateRoad(5);
     cig->SetPosition(glm::vec3(0, -0.11, -0.5));
     cig->SetParent(playerHead);
     playerHead->AddChild(cig);
@@ -415,7 +415,7 @@ void Game::CursorCallback(GLFWwindow* window, double xPos, double yPos) {
     float rot_factor(glm::pi<float>() / 180);
     //float xMag = glm::abs(xCord);
     //float yMag = glm::abs(yCord);
-    float mag = 0.4;
+    float mag = 0.6;
 
     glm::quat r = glm::quat(0,glm::vec3(0,0,0));
     glm::vec3 rot;
@@ -588,7 +588,7 @@ void Game::CreateRoad(int num_roads) {
         if (third) {
             //Buildings
 
-        /*    std::string buildingName1 = "BuildingInstanceLeft" + index;
+           /* std::string buildingName1 = "BuildingInstanceLeft" + index;
             std::string buildingName2 = "BuildingInstanceRight" + index;
 
             float buildingScale = 3;
@@ -609,7 +609,7 @@ void Game::CreateRoad(int num_roads) {
             game::SceneNode* Building = CreateInstance("rightBuildingLong", "B3", "TiledBrick", "TileableBrickTexture");
             Building->SetScale(glm::vec3(.1, .1, .1) * buildingScale);
             //Building->Rotate(glm::quat(-1.0f, glm::vec3(0, 1, 0)));
-            Building->SetPosition(glm::vec3(21, -1, -40*i));
+            Building->SetPosition(glm::vec3(21, -1, (-35*i)-30));
 
         }
 
@@ -631,6 +631,12 @@ void Game::CreateRoad(int num_roads) {
             Road3->Rotate(glm::quat(1, glm::vec3(0, 1, 0)));
             Road4->SetPosition(glm::vec3(-48,-1, zCord));
             Road4->Rotate(glm::quat(1, glm::vec3(0, 1, 0)));
+
+            CreateTree(3, glm::vec3(22, 0, zCord+20));
+            game::SceneNode* r = CreateInstance("treeHolder", "Rd1", "RoadNoir", "AsphaltTexture");
+            r->SetPosition(glm::vec3(22, -1.25f, zCord + 20));
+            //Branch* b = new Branch();
+            //game::SceneNode* Tree = CreateInstance("Tree","")
 
         }
 
@@ -672,9 +678,12 @@ void Game::CreateRoad(int num_roads) {
 void Game::CreateBuildings(glm::vec3 initPos, float room) {
 
     float nextSpot = initPos.z;
+    
+    std::cout << "proc once" << std::endl;
+  
 
     int index = 0;
-    while (abs(nextSpot) +10 < room) {
+    while (abs(nextSpot) +30 < room) {
         
         //Set name
         std::string buildingName;
@@ -695,6 +704,11 @@ void Game::CreateBuildings(glm::vec3 initPos, float room) {
         int notOne = 0;
         if (index > 0)notOne = 1;
 
+        if (index == 0) {
+            game::SceneNode* Road = CreateInstance("Alley", "Rd1", "RoadNoir", "AsphaltTexture");
+
+            Road->SetPosition(glm::vec3(-20, -1,  -55));
+        }
 
         if (r == 1) {
             float buildingScale = 9;
@@ -702,12 +716,12 @@ void Game::CreateBuildings(glm::vec3 initPos, float room) {
             Building->SetScale(glm::vec3(.1, .1, .1) * buildingScale);
             Building->Rotate(glm::quat(-1.0f, glm::vec3(0, 1, 0)));
             Building->SetPosition(glm::vec3(-23, -1, nextSpot - (0*notOne)));
-            nextSpot -= 29;
+            nextSpot -= 30;
         }
         
         else {
             float buildingScale = 3;
-            if (abs(nextSpot - 50) + 10 > room)break;
+            if (abs(nextSpot - 50) + 10 > room)continue;
             game::SceneNode* Building= CreateInstance(buildingName, "OldHouse", "TiledBrick", "TileableBrickTexture");
             Building->SetScale(glm::vec3(.1, .1, .1) * buildingScale);
             Building->Rotate(glm::quat(-1.0f, glm::vec3(0, 1, 0)));
