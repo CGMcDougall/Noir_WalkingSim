@@ -229,12 +229,20 @@ void Game::SetupResources(void){
     filename = std::string(MATERIAL_DIRECTORY) + std::string("\\Assets/tileableBrick.png");
     resman_.LoadResource(Texture, "TileableBrickTexture", filename.c_str());
 
+    filename = std::string(MATERIAL_DIRECTORY) + std::string("\\Assets/tileableBrick2.png");
+    resman_.LoadResource(Texture, "TileableBrick2Texture", filename.c_str());
+
+    filename = std::string(MATERIAL_DIRECTORY) + std::string("\\Assets/BuildingText3.png");
+    resman_.LoadResource(Texture, "TileableBuildingTexture", filename.c_str());
+
     filename = std::string(MATERIAL_DIRECTORY) + std::string("\\Assets/asphalt.png");
     resman_.LoadResource(Texture, "AsphaltTexture", filename.c_str());
 
     filename = std::string(MATERIAL_DIRECTORY) + std::string("\\Assets/Street_Lamp_Textures/Fasce_Lampada_SH_BaseColor.png");
     resman_.LoadResource(Texture, "LampTexture", filename.c_str());
 
+
+    
     
   /*  filename = std::string(MATERIAL_DIRECTORY) + std::string("\\Assets/Body_Metallic1.png");
     resman_.LoadResource(Texture, "Car1Text", filename.c_str());*/
@@ -616,7 +624,7 @@ void Game::CreateRoad(int num_roads) {
             Building2->SetPosition(glm::vec3(34, -1, (-17 * i)-22));*/
 
             float buildingScale = 9;
-            game::SceneNode* Building = CreateInstance("rightBuildingLong", "B3", "TiledBrick", "TileableBrickTexture");
+            game::SceneNode* Building = CreateInstance("rightBuildingLong", "B3", "TiledBrick", "TileableBuildingTexture");
             Building->SetScale(glm::vec3(.1, .1, .1) * buildingScale);
             //Building->Rotate(glm::quat(-1.0f, glm::vec3(0, 1, 0)));
             Building->SetPosition(glm::vec3(21, -1, (-35*i)-30));
@@ -722,7 +730,7 @@ void Game::CreateBuildings(glm::vec3 initPos, float room) {
 
         if (r == 1) {
             float buildingScale = 9;
-            game::SceneNode* Building = CreateInstance(buildingName, "B2", "TiledBrick", "TileableBrickTexture");
+            game::SceneNode* Building = CreateInstance(buildingName, "B2", "TiledBrick", "TileableBrick2Texture");
             Building->SetScale(glm::vec3(.1, .1, .1) * buildingScale);
             Building->Rotate(glm::quat(-1.0f, glm::vec3(0, 1, 0)));
             Building->SetPosition(glm::vec3(-23, -1, nextSpot - (0*notOne)));
