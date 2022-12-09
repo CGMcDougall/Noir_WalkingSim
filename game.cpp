@@ -55,6 +55,7 @@ void Game::Init(void){
     animating_ = true;
     blur_ = false;
     noir_ = true;
+    cameraLocked_ = false;
 
     try {
         am.Init(NULL);
@@ -338,29 +339,10 @@ void Game::MainLoop(void){
     // Loop while the user did not close the window
     while (!glfwWindowShouldClose(window_)){
 
-        //SceneNode* n = scene_.GetNode("Car1");
-        ////if (n != NULL)std::cout << "LOADED AND HERE" << std::endl;
-        ////else std::cout << "dumb ass, maybe get it to work"<< std::endl;
-        //n->SetPosition(glm::vec3(0, 0, 0));
-
-        //n = scene_.GetNode("StreetLamp1");
-        //n->SetPosition(glm::vec3(10, 0, 0));
-        //
-
-        //n = scene_.GetNode("Road1");
-        //n->SetPosition(glm::vec3(0, 3, 0));
-
-        //scene_.AddLightSource(camera_.GetPosition(), 0);
-
-        SceneNode* n = scene_.GetNode("Cigarette");
-        glm::vec3 playerPos = camera_.GetPosition();
-        playerPos = glm::vec3(playerPos.x + 0.1, playerPos.y - 0.1, playerPos.z - 0.7);
-        n->SetPosition(playerPos);
-        //n->SetOrientation(camera_.GetOrientation());
-        //n->Rotate(camera_.GetOrientation());
-
-       glm::vec3 pos = glm::vec3(0, 0, 1);
-
+        // Important to attach cigarette to camera
+        SceneNode* n = scene_.GetNode("PlayerHead");
+        n->SetPosition(camera_.GetPosition());
+        n->SetOrientation(camera_.GetOrientation());
         
         if (animating_) {
             static double last_time = 0;
@@ -370,8 +352,6 @@ void Game::MainLoop(void){
                 last_time = current_time;
             }
         }
-
-
         
         if (blur_) {
             // Draw the scene to a texture
@@ -481,10 +461,23 @@ void Game::KeyCallback(GLFWwindow* window, int key, int scancode, int action, in
     float trans_factor = 1.0;
 
     if (key == GLFW_KEY_W) {
-        game->camera_.Translate(forwardVec * trans_factor);
+        if (game->cameraLocked_) {
+            game->camera_.Translate(glm::vec3(forwardVec.x, 0, forwardVec.z) * trans_factor);
+        }
+        else {
+            game->camera_.Translate(forwardVec * trans_factor);
+        }
+        
+
     }
     if (key == GLFW_KEY_S) {
-        game->camera_.Translate(-forwardVec * trans_factor);
+        if (game->cameraLocked_) {
+            game->camera_.Translate(-glm::vec3(forwardVec.x, 0, forwardVec.z) * trans_factor);
+        }
+        else {
+            game->camera_.Translate(-forwardVec * trans_factor);
+        }
+        
     }
     if (key == GLFW_KEY_A) {
         game->camera_.Translate(-game->camera_.GetSide() * trans_factor);
@@ -498,13 +491,15 @@ void Game::KeyCallback(GLFWwindow* window, int key, int scancode, int action, in
 
     std::cout << glm::to_string(game->camera_.GetPosition()) << std::endl;
 
-    glm::vec3 pos = game->camera_.GetPosition();
-    if (pos.x < -8 && (pos.z > -205 || pos.z < -225))pos.x = -8;
-    if (pos.x > 9 && (pos.z > -188 || pos.z < -225))pos.x = 9;
-    if (pos.z > 20)pos.z = 20;
-    if (pos.z < -225)pos.z = -225;
+    if (game->cameraLocked_) {
+        glm::vec3 pos = game->camera_.GetPosition();
+        if (pos.x < -8 && (pos.z > -205 || pos.z < -225))pos.x = -8;
+        if (pos.x > 9 && (pos.z > -188 || pos.z < -225))pos.x = 9;
+        if (pos.z > 20)pos.z = 20;
+        if (pos.z < -225)pos.z = -225;
+        game->camera_.SetPosition(pos);
+    }
     
-    game->camera_.SetPosition(pos);
 }
 
 
