@@ -75,6 +75,9 @@ namespace game {
             // Flag to turn noir filter on/off
             bool noir_;
 
+            // Flag to turn camera locking on or off
+            bool cameraLocked_;
+
             // Methods to initialize the game
             void InitWindow(void);
             void InitView(void);

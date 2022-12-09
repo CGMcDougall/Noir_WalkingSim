@@ -55,6 +55,7 @@ void Game::Init(void){
     animating_ = true;
     blur_ = false;
     noir_ = true;
+    cameraLocked_ = false;
 
   /*  try {
         am.Init(NULL);
@@ -460,10 +461,23 @@ void Game::KeyCallback(GLFWwindow* window, int key, int scancode, int action, in
     float trans_factor = 1.0;
 
     if (key == GLFW_KEY_W) {
-        game->camera_.Translate(glm::vec3(forwardVec.x, 0, forwardVec.z) * trans_factor);
+        if (game->cameraLocked_) {
+            game->camera_.Translate(glm::vec3(forwardVec.x, 0, forwardVec.z) * trans_factor);
+        }
+        else {
+            game->camera_.Translate(forwardVec * trans_factor);
+        }
+        
+
     }
     if (key == GLFW_KEY_S) {
-        game->camera_.Translate(-glm::vec3(forwardVec.x, 0, forwardVec.z) * trans_factor);
+        if (game->cameraLocked_) {
+            game->camera_.Translate(-glm::vec3(forwardVec.x, 0, forwardVec.z) * trans_factor);
+        }
+        else {
+            game->camera_.Translate(-forwardVec * trans_factor);
+        }
+        
     }
     if (key == GLFW_KEY_A) {
         game->camera_.Translate(-game->camera_.GetSide() * trans_factor);
@@ -477,13 +491,15 @@ void Game::KeyCallback(GLFWwindow* window, int key, int scancode, int action, in
 
     std::cout << glm::to_string(game->camera_.GetPosition()) << std::endl;
 
-    glm::vec3 pos = game->camera_.GetPosition();
-    if (pos.x < -8 && (pos.z > -205 || pos.z < -225))pos.x = -8;
-    if (pos.x > 9 && (pos.z > -188 || pos.z < -225))pos.x = 9;
-    if (pos.z > 20)pos.z = 20;
-    if (pos.z < -225)pos.z = -225;
+    if (game->cameraLocked_) {
+        glm::vec3 pos = game->camera_.GetPosition();
+        if (pos.x < -8 && (pos.z > -205 || pos.z < -225))pos.x = -8;
+        if (pos.x > 9 && (pos.z > -188 || pos.z < -225))pos.x = 9;
+        if (pos.z > 20)pos.z = 20;
+        if (pos.z < -225)pos.z = -225;
+        game->camera_.SetPosition(pos);
+    }
     
-    game->camera_.SetPosition(pos);
 }
 
 
