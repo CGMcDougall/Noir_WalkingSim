@@ -24,12 +24,12 @@
       "variables": [
         {
           "name": "OPENAL_LIBRARY",
-          "value": "C:/Users/Conno/OneDrive/Documents/GitHub/vcpkg/installed/x86-windows/debug/lib/OpenAL32.lib",
+          "value": "C:\\Users\\Conno\\OneDrive\\Desktop\\Game Design\\Third Year\\_Project\\Project\\Libs\\lib\\OpenAL32.lib",
           "type": "FILEPATH"
         },
         {
           "name": "ALUT_LIBRARY",
-          "value": "C:/Users/Conno/OneDrive/Documents/GitHub/vcpkg/installed/x86-windows/debug/lib/alut.lib",
+          "value": "C:\\Users\\Conno\\OneDrive\\Desktop\\Game Design\\Third Year\\_Project\\Project\\Libs\\lib\\alut.lib",
           "type": "FILEPATH"
         }
       ]

@@ -1,0 +1,159 @@
+{
+  "$schema": "https://raw.githubusercontent.com/spdx/spdx-spec/v2.2.1/schemas/spdx-schema.json",
+  "spdxVersion": "SPDX-2.2",
+  "dataLicense": "CC0-1.0",
+  "SPDXID": "SPDXRef-DOCUMENT",
+  "documentNamespace": "https://spdx.org/spdxdocs/freealut-x86-windows-1.1.0#3-accca392-857c-4801-b685-67dfce0d7a22",
+  "name": "freealut:x86-windows@1.1.0#3 2b1d0781a131921f961d7a3c7d320eff44ecbbaf07005272724b618a85071221",
+  "creationInfo": {
+    "creators": [
+      "Tool: vcpkg-5fdee72bc1fceca198fb1ab7589837206a8b81ba"
+    ],
+    "created": "2022-12-05T21:29:09Z"
+  },
+  "relationships": [
+    {
+      "spdxElementId": "SPDXRef-port",
+      "relationshipType": "GENERATES",
+      "relatedSpdxElement": "SPDXRef-binary"
+    },
+    {
+      "spdxElementId": "SPDXRef-port",
+      "relationshipType": "CONTAINS",
+      "relatedSpdxElement": "SPDXRef-file-0"
+    },
+    {
+      "spdxElementId": "SPDXRef-port",
+      "relationshipType": "CONTAINS",
+      "relatedSpdxElement": "SPDXRef-file-1"
+    },
+    {
+      "spdxElementId": "SPDXRef-port",
+      "relationshipType": "CONTAINS",
+      "relatedSpdxElement": "SPDXRef-file-2"
+    },
+    {
+      "spdxElementId": "SPDXRef-port",
+      "relationshipType": "CONTAINS",
+      "relatedSpdxElement": "SPDXRef-file-3"
+    },
+    {
+      "spdxElementId": "SPDXRef-binary",
+      "relationshipType": "GENERATED_FROM",
+      "relatedSpdxElement": "SPDXRef-port"
+    },
+    {
+      "spdxElementId": "SPDXRef-file-0",
+      "relationshipType": "CONTAINED_BY",
+      "relatedSpdxElement": "SPDXRef-port"
+    },
+    {
+      "spdxElementId": "SPDXRef-file-1",
+      "relationshipType": "CONTAINED_BY",
+      "relatedSpdxElement": "SPDXRef-port"
+    },
+    {
+      "spdxElementId": "SPDXRef-file-2",
+      "relationshipType": "CONTAINED_BY",
+      "relatedSpdxElement": "SPDXRef-port"
+    },
+    {
+      "spdxElementId": "SPDXRef-file-3",
+      "relationshipType": "CONTAINED_BY",
+      "relatedSpdxElement": "SPDXRef-port"
+    },
+    {
+      "spdxElementId": "SPDXRef-file-3",
+      "relationshipType": "DEPENDENCY_MANIFEST_OF",
+      "relatedSpdxElement": "SPDXRef-port"
+    }
+  ],
+  "packages": [
+    {
+      "name": "freealut",
+      "SPDXID": "SPDXRef-port",
+      "versionInfo": "1.1.0#3",
+      "downloadLocation": "git+https://github.com/Microsoft/vcpkg#ports/freealut",
+      "homepage": "https://github.com/vancegroup/freealut",
+      "licenseConcluded": "LGPL-2.0-only",
+      "licenseDeclared": "NOASSERTION",
+      "copyrightText": "NOASSERTION",
+      "description": "FreeALUT is a free implementation of OpenAL's ALUT standard.\nALUT is a set of portable functions which remove the annoying details of getting an audio application started. It is the OpenAL counterpart of what GLUT is for OpenGL. ",
+      "comment": "This is the port (recipe) consumed by vcpkg."
+    },
+    {
+      "name": "freealut:x86-windows",
+      "SPDXID": "SPDXRef-binary",
+      "versionInfo": "2b1d0781a131921f961d7a3c7d320eff44ecbbaf07005272724b618a85071221",
+      "downloadLocation": "NONE",
+      "licenseConcluded": "LGPL-2.0-only",
+      "licenseDeclared": "NOASSERTION",
+      "copyrightText": "NOASSERTION",
+      "comment": "This is a binary package built by vcpkg."
+    },
+    {
+      "SPDXID": "SPDXRef-resource-1",
+      "name": "vancegroup/freealut",
+      "downloadLocation": "git+https://github.com/vancegroup/freealut@fc814e316c2bfa6e05b723b8cc9cb276da141aae",
+      "licenseConcluded": "NOASSERTION",
+      "licenseDeclared": "NOASSERTION",
+      "copyrightText": "NOASSERTION",
+      "checksums": [
+        {
+          "algorithm": "SHA512",
+          "checksumValue": "046990cc13822ca6eea0b8e412aa95a994b881429e0b15cefee379f08bd9636d4a4598292a8d46b30c3cd06814bfaeae3298e8ef4087a46eede344f3880e9fed"
+        }
+      ]
+    }
+  ],
+  "files": [
+    {
+      "fileName": "./cmake_builds.patch",
+      "SPDXID": "SPDXRef-file-0",
+      "checksums": [
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "bcc44db92f385fa9d6b386a70ba8f0983e4d0a6b2038f03ff62b4b77ef0ff75b"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": "./portfile.cmake",
+      "SPDXID": "SPDXRef-file-1",
+      "checksums": [
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "2500e665a45a8fd02e13f10349d822a57766021ee14cbc7da167eb09cf298056"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": "./unix_headers.patch",
+      "SPDXID": "SPDXRef-file-2",
+      "checksums": [
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "0b8e4d7dcba2722679360c427aa7e5b7df08f31eb8c78827f14f5cace28e0929"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": "./vcpkg.json",
+      "SPDXID": "SPDXRef-file-3",
+      "checksums": [
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "4dc858d71aa04fe84d68b96f4d1fbbcc701a5bda73cbdd5bf2f72a5478a2a9d3"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "copyrightText": "NOASSERTION"
+    }
+  ]
+}

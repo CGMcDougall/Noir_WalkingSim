@@ -56,12 +56,12 @@ void Game::Init(void){
     blur_ = false;
     noir_ = true;
 
-  /*  try {
+    try {
         am.Init(NULL);
     }
     catch (std::exception& e) {
         std::cout<<"Problem occured with audio device" << std::endl;
-    }*/
+    }
     
 }
 
@@ -253,7 +253,7 @@ void Game::SetupResources(void){
 
     //auido .wav file
     filename = std::string(MATERIAL_DIRECTORY).append("\\Assets/rain.wav");
-    //rainIndex = am.AddSound(filename.c_str());
+    rainIndex = am.AddSound(filename.c_str());
 
     // Load material for screen-space effect
     filename = std::string(MATERIAL_DIRECTORY) + std::string("/screen_space");
@@ -305,9 +305,9 @@ void Game::SetupScene(void){
     Building2->SetPosition(glm::vec3(-20, 0, -20));
     Building2->SetScale(glm::vec3(1, 1, 1)*8.0f);*/
 
-   /* am.SetSoundPosition(rainIndex, 0.0f, 0.0f, 0.0f);
+    am.SetSoundPosition(rainIndex, 0.0f, 0.0f, 0.0f);
     am.SetLoop(rainIndex, true);
-    am.PlaySound(rainIndex);*/
+    am.PlaySound(rainIndex);
    
 
     game::Cigarette* cig = CreateCigaretteInstance("Cigarette", "Cig", "Noir", "CigText");
@@ -585,6 +585,8 @@ void Game::CreateRoad(int num_roads) {
 
     bool left = true;
 
+
+
     for (int i = 0; i < num_roads; i++) {
 
         bool even = (i % 2 == 0);
@@ -687,6 +689,12 @@ void Game::CreateRoad(int num_roads) {
 
 
     CreateBuildings(glm::vec3(-34, -1, -10), num_roads * 49);
+
+    float buildingScale = 9;
+    game::SceneNode* Building = CreateInstance("rightBuildingLong", "B3", "TiledBrick", "TileableBuildingTexture");
+    Building->SetScale(glm::vec3(.1, .1, .1)* buildingScale);
+    Building->Rotate(glm::quat(1.0f, glm::vec3(0, 1, 0)));
+    Building->SetPosition(glm::vec3(0,-1,30));
     
  
        
@@ -724,8 +732,12 @@ void Game::CreateBuildings(glm::vec3 initPos, float room) {
 
         if (index == 0) {
             game::SceneNode* Road = CreateInstance("Alley", "Rd1", "RoadNoir", "AsphaltTexture");
-
             Road->SetPosition(glm::vec3(-20, -1,  -55));
+            //game::SceneNode* Car
+            game::SceneNode *Car = CreateInstance("Car1", "car", "Noir");
+            Car->SetScale(glm::vec3(1, 1, 1)*0.04f);
+            Car->Rotate(glm::quat(1.0f,glm::vec3(0,1,0)));
+            Car->SetPosition(glm::vec3(-20, -0.5f, -41));
         }
 
         if (r == 1) {
