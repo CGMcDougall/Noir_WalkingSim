@@ -338,29 +338,10 @@ void Game::MainLoop(void){
     // Loop while the user did not close the window
     while (!glfwWindowShouldClose(window_)){
 
-        //SceneNode* n = scene_.GetNode("Car1");
-        ////if (n != NULL)std::cout << "LOADED AND HERE" << std::endl;
-        ////else std::cout << "dumb ass, maybe get it to work"<< std::endl;
-        //n->SetPosition(glm::vec3(0, 0, 0));
-
-        //n = scene_.GetNode("StreetLamp1");
-        //n->SetPosition(glm::vec3(10, 0, 0));
-        //
-
-        //n = scene_.GetNode("Road1");
-        //n->SetPosition(glm::vec3(0, 3, 0));
-
-        //scene_.AddLightSource(camera_.GetPosition(), 0);
-
-        SceneNode* n = scene_.GetNode("Cigarette");
-        glm::vec3 playerPos = camera_.GetPosition();
-        playerPos = glm::vec3(playerPos.x + 0.1, playerPos.y - 0.1, playerPos.z - 0.7);
-        n->SetPosition(playerPos);
-        //n->SetOrientation(camera_.GetOrientation());
-        //n->Rotate(camera_.GetOrientation());
-
-       glm::vec3 pos = glm::vec3(0, 0, 1);
-
+        // Important to attach cigarette to camera
+        SceneNode* n = scene_.GetNode("PlayerHead");
+        n->SetPosition(camera_.GetPosition());
+        n->SetOrientation(camera_.GetOrientation());
         
         if (animating_) {
             static double last_time = 0;
@@ -370,8 +351,6 @@ void Game::MainLoop(void){
                 last_time = current_time;
             }
         }
-
-
         
         if (blur_) {
             // Draw the scene to a texture
@@ -481,10 +460,10 @@ void Game::KeyCallback(GLFWwindow* window, int key, int scancode, int action, in
     float trans_factor = 1.0;
 
     if (key == GLFW_KEY_W) {
-        game->camera_.Translate(forwardVec * trans_factor);
+        game->camera_.Translate(glm::vec3(forwardVec.x, 0, forwardVec.z) * trans_factor);
     }
     if (key == GLFW_KEY_S) {
-        game->camera_.Translate(-forwardVec * trans_factor);
+        game->camera_.Translate(-glm::vec3(forwardVec.x, 0, forwardVec.z) * trans_factor);
     }
     if (key == GLFW_KEY_A) {
         game->camera_.Translate(-game->camera_.GetSide() * trans_factor);
