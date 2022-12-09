@@ -46,7 +46,9 @@ void ResourceManager::LoadResource(ResourceType type, const std::string name, co
         LoadMaterial(name, filename);
     } else if (type == Texture){
         LoadTexture(name, filename);
-    } else if (type == Mesh){
+    } else if (type == CubeMap) {
+        LoadCubeMap(name, filename);
+    } else if (type == Mesh) {
         LoadMesh(name, filename);
     } else {
         throw(std::invalid_argument(std::string("Invalid type of resource")));
@@ -566,6 +568,28 @@ void ResourceManager::LoadTexture(const std::string name, const char *filename){
     AddResource(Texture, name, texture, 0);
 }
 
+void ResourceManager::LoadCubeMap(const std::string name, const char *filename) {
+    
+    std::string faces[6] = {
+        std::string("right.png"), std::string("left.png"), std::string("top.png"), std::string("bottom.png"), std::string("front.png"), std::string("back.png")
+    };
+
+    std::string fn = std::string(filename);
+
+    GLuint cubemap = SOIL_load_OGL_cubemap(
+        (fn + faces[0]).c_str(),
+        (fn + faces[1]).c_str(),
+        (fn + faces[2]).c_str(),
+        (fn + faces[3]).c_str(),
+        (fn + faces[4]).c_str(),
+        (fn + faces[5]).c_str(),
+        SOIL_LOAD_AUTO, SOIL_CREATE_NEW_ID, 0
+    );
+
+
+    AddResource(CubeMap, name, cubemap, 0);
+}
+
 void ResourceManager::LoadMesh(const std::string name, const char *filename){
 
     // First load model into memory. If that goes well, we transfer the
@@ -955,6 +979,7 @@ void ResourceManager::CreateWall(std::string object_name){
     // Create resource
     AddResource(Mesh, object_name, vbo, ebo, 2 * 3);
 }
+
 
 void ResourceManager::CreateCube(std::string object_name) {
     // Definition

@@ -5,9 +5,9 @@
 #include <stdlib.h>
 
 
-#include <AL/al.h>
-#include <AL/alc.h>
-#include <AL/alut.h>
+#include "Libs/include/AL/al.h"
+#include "Libs/include/AL/alc.h"
+#include "Libs/include/AL/alut.h"
 
 
 #include <exception>

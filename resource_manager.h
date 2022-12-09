@@ -8,6 +8,7 @@
 #include <GLFW/glfw3.h>
 
 #include "resource.h"
+#include "stb_image.h"
 
 // Default extensions for different shader source files
 #define VERTEX_PROGRAM_EXTENSION "_vp.glsl"
@@ -68,6 +69,8 @@ namespace game {
             std::string LoadTextFile(const char *filename);
             // Load a texture from an image file: png, jpg, etc.
             void LoadTexture(const std::string name, const char *filename);
+            // Load a cubemap from an array of image files
+            void LoadCubeMap(const std::string name, const char *filename);
             // Loads a mesh in obj format
             void LoadMesh(const std::string name, const char *filename);
 
