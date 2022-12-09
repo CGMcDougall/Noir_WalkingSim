@@ -16,8 +16,14 @@ set(SRCS
    rain_particles_vp.glsl rain_particles_gp.glsl rain_particles_fp.glsl branch.cpp cigarette_fp.glsl cigarette_gp.glsl cigarette_vp.glsl noir_filter_vp.glsl noir_filter_fp.glsl tiled_brick_vp.glsl tiled_brick_fp.glsl
 )
 
+
+
 # Add path name to configuration file
 configure_file(path_config.h.in path_config.h)
+
+
+#set(ADDED_LIBS C:\Users\Conno\OneDrive\Desktop\Game Design\Third Year\_Project\Project\Libs\lib\)
+#set(ADDED_LIBS "ProjectDirectory"\Libs\lib\)
 
 # Add executable based on the source files
 add_executable(${PROJ_NAME} ${HDRS} ${SRCS})
@@ -38,6 +44,10 @@ elseif(WIN32)
     find_library(GLEW_LIBRARY glew32s HINTS ${LIBRARY_PATH}/lib)
     find_library(GLFW_LIBRARY glfw3 HINTS ${LIBRARY_PATH}/lib)
     find_library(SOIL_LIBRARY SOIL HINTS ${LIBRARY_PATH}/lib)
+    #find_library(SOIL_LIBRARY alut HINTS ${ADDED_LIBS}/lib)
+    #find_library(SOIL_LIBRARY OpenAl32 HINTS ${ADDED_LIBS}/lib)
+
+
 endif(NOT WIN32)
 target_link_libraries(${PROJ_NAME} ${GLEW_LIBRARY})
 target_link_libraries(${PROJ_NAME} ${GLFW_LIBRARY})
