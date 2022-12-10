@@ -289,7 +289,21 @@ void SceneNode::SetupShader(GLuint program){
     glUniformMatrix4fv(normal_mat, 1, GL_FALSE, glm::value_ptr(normal_matrix));
 
     // Texture
-    if (texture_){
+    if (name_._Equal("Skybox")) {
+        GLint skybox = glGetUniformLocation(program, "skybox");
+        glUniform1i(skybox, 0); // Assign the first texture to the map
+        glActiveTexture(GL_TEXTURE0);
+
+        glBindTexture(GL_TEXTURE_CUBE_MAP, texture_);
+        // Define texture interpolation
+        glGenerateMipmap(GL_TEXTURE_CUBE_MAP);
+        glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+        glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+        glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+        glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+        glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE);
+
+    } else if (texture_){
         GLint tex = glGetUniformLocation(program, "texture_map");
         glUniform1i(tex, 0); // Assign the first texture to the map
         glActiveTexture(GL_TEXTURE0); 

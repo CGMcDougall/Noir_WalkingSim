@@ -58,7 +58,7 @@ void Game::Init(void){
     cameraLocked_ = false;
 
     try {
-        am.Init(NULL);
+        //am.Init(NULL);
     }
     catch (std::exception& e) {
         std::cout<<"Problem occured with audio device" << std::endl;
@@ -162,6 +162,9 @@ void Game::SetupResources(void){
     filename = std::string(MATERIAL_DIRECTORY) + std::string("\\tiled_brick");
     resman_.LoadResource(Material, "TiledBrick", filename.c_str());
 
+    filename = std::string(MATERIAL_DIRECTORY) + std::string("\\skybox");
+    resman_.LoadResource(Material, "Skybox", filename.c_str());
+
 
     // Environment Objects
     filename = std::string(MATERIAL_DIRECTORY) + std::string("\\Assets/StraightRoad1.obj");
@@ -180,8 +183,6 @@ void Game::SetupResources(void){
     resman_.LoadResource(Mesh, "TrafficLight", filename.c_str());*/
 
     resman_.CreateCylinder("BranchCylinder", BRANCH_LENGTH, 0.4, 10, 10);
-
-    resman_.CreateCube("Cube");
 
     // Misc Objects
     filename = std::string(MATERIAL_DIRECTORY) + std::string("\\Assets/Cig/Cig.obj");
@@ -203,7 +204,6 @@ void Game::SetupResources(void){
 
     filename = std::string(MATERIAL_DIRECTORY) + std::string("\\Assets/Buildings/CentralBuilding.obj");
     resman_.LoadResource(Mesh, "centralBuilding", filename.c_str());
-
 
     // Textures
     filename = std::string(MATERIAL_DIRECTORY) + std::string("\\Assets/rocky.png");
@@ -241,9 +241,6 @@ void Game::SetupResources(void){
 
     filename = std::string(MATERIAL_DIRECTORY) + std::string("\\Assets/Street_Lamp_Textures/Fasce_Lampada_SH_BaseColor.png");
     resman_.LoadResource(Texture, "LampTexture", filename.c_str());
-
-
-    
     
   /*  filename = std::string(MATERIAL_DIRECTORY) + std::string("\\Assets/Body_Metallic1.png");
     resman_.LoadResource(Texture, "Car1Text", filename.c_str());*/
@@ -254,7 +251,7 @@ void Game::SetupResources(void){
 
     //auido .wav file
     filename = std::string(MATERIAL_DIRECTORY).append("\\Assets/rain.wav");
-    rainIndex = am.AddSound(filename.c_str());
+    //rainIndex = am.AddSound(filename.c_str());
 
     // Load material for screen-space effect
     filename = std::string(MATERIAL_DIRECTORY) + std::string("/screen_space");
@@ -264,10 +261,16 @@ void Game::SetupResources(void){
     resman_.LoadResource(Material, "NoirFilter", filename.c_str());
 
 
+    // Cube maps
+    resman_.CreateCube("Cube");
+    filename = std::string(MATERIAL_DIRECTORY) + std::string("\\Assets/nightSky/space_");
+    resman_.LoadResource(CubeMap, "SpaceSkyBox", filename.c_str());
+
+
     // Create particles
     resman_.CreateRainParticles("RainParticles");
     
-    resman_.CreateSmokeParticles("SmokeParticles", 4000);
+    resman_.CreateSmokeParticles("SmokeParticles", 2000);
     
     // Setup drawing to texture
     scene_.SetupDrawToTexture();
@@ -281,19 +284,11 @@ void Game::SetupScene(void){
 
     game::SceneNode* playerHead = CreateInstance("PlayerHead", "Cube", "Metal");
 
-    
-
     // Create particles
     game::SceneNode* rainParticles = CreateInstance("RainInstance", "RainParticles", "RainMaterial");
 
-    
-
-
     // Create skybox
-    /*node = CreateInstance("SkyBox", "SkyBox", "Noir", "NightTexture");
-    node->SetScale(glm::vec3(100));
-    node->SetPosition(glm::vec3(0));*/
-
+    game::SceneNode* skyBox = CreateInstance("Skybox", "Cube", "Skybox", "SpaceSkyBox");
 
     //game::SceneNode *Car = CreateInstance("Car1", "car", "Noir");
     //Car->SetScale(glm::vec3(0.2, 0.2, 0.2));
@@ -306,9 +301,9 @@ void Game::SetupScene(void){
     Building2->SetPosition(glm::vec3(-20, 0, -20));
     Building2->SetScale(glm::vec3(1, 1, 1)*8.0f);*/
 
-    am.SetSoundPosition(rainIndex, 0.0f, 0.0f, 0.0f);
+    /*am.SetSoundPosition(rainIndex, 0.0f, 0.0f, 0.0f);
     am.SetLoop(rainIndex, true);
-    am.PlaySound(rainIndex);
+    am.PlaySound(rainIndex);*/
    
 
     game::Cigarette* cig = CreateCigaretteInstance("Cigarette", "Cig", "Noir", "CigText");
@@ -340,9 +335,13 @@ void Game::MainLoop(void){
     while (!glfwWindowShouldClose(window_)){
 
         // Important to attach cigarette to camera
-        SceneNode* n = scene_.GetNode("PlayerHead");
-        n->SetPosition(camera_.GetPosition());
-        n->SetOrientation(camera_.GetOrientation());
+        SceneNode* playerHead = scene_.GetNode("PlayerHead");
+        playerHead->SetPosition(camera_.GetPosition());
+        playerHead->SetOrientation(camera_.GetOrientation());
+
+        SceneNode* skybox = scene_.GetNode("Skybox");
+        skybox->SetPosition(camera_.GetPosition());
+
         
         if (animating_) {
             static double last_time = 0;
@@ -371,7 +370,6 @@ void Game::MainLoop(void){
             // Draw the scene
             scene_.Draw(&camera_);
         }
-
 
         // Push buffer drawn in the background onto the display
         glfwSwapBuffers(window_);
@@ -403,34 +401,27 @@ void Game::CursorCallback(GLFWwindow* window, double xPos, double yPos) {
     float rot_factor(glm::pi<float>() / 180);
     //float xMag = glm::abs(xCord);
     //float yMag = glm::abs(yCord);
-    float mag = 0.6;
+    float mag = 1.5;
 
     glm::quat r = glm::quat(0,glm::vec3(0,0,0));
-    glm::vec3 rot;
-    float mag2 = 0.1f;
-
-    
 
     float trans_factor = 1.0;
     if (yCord < 0) {
         game->camera_.Pitch(rot_factor * mag);
-        r = glm::normalize(glm::angleAxis(-rot_factor * mag * mag2, game->camera_.GetSide()));
+        r = glm::normalize(glm::angleAxis(-rot_factor * mag, game->camera_.GetSide()));
     }
     if (yCord > 0) {
         game->camera_.Pitch(-rot_factor * mag);
-        r = glm::normalize(glm::angleAxis(rot_factor * mag * mag2, game->camera_.GetSide()));
+        r = glm::normalize(glm::angleAxis(rot_factor * mag, game->camera_.GetSide()));
     }
     if (xCord < 0) {
         r = game->camera_.Yaw(rot_factor * mag);
-        r = glm::normalize(glm::angleAxis(-rot_factor * mag * mag2, game->camera_.GetUp()));
+        r = glm::normalize(glm::angleAxis(-rot_factor * mag, game->camera_.GetUp()));
     }
     if (xCord > 0) {
         r = game->camera_.Yaw(-rot_factor * mag);
-        r = glm::normalize(glm::angleAxis(rot_factor * mag*mag2, game->camera_.GetUp()));
+        r = glm::normalize(glm::angleAxis(rot_factor * mag, game->camera_.GetUp()));
     }
-
-    glm::vec3 pos = game->camera_.GetPosition();
-    pos = glm::vec3(pos.x + 0.1, pos.y - 0.1, pos.z - 0.7);
 
     glfwSetCursorPos(window, 0, 0);
     

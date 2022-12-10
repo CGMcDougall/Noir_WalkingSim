@@ -1,8 +1,8 @@
 #if !defined(AL_ALUT_H)
 #define AL_ALUT_H
 
-#include <alc.h>
-#include <al.h>
+#include "Libs/include/AL/alc.h"
+#include "Libs/include/AL/al.h"
 
 #if defined(__cplusplus)
 extern "C" {
