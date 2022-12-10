@@ -55,7 +55,7 @@ void Game::Init(void){
     animating_ = true;
     blur_ = false;
     noir_ = true;
-    cameraLocked_ = false;
+    cameraLocked_ = true;
 
     try {
         //am.Init(NULL);
@@ -342,6 +342,8 @@ void Game::MainLoop(void){
         SceneNode* skybox = scene_.GetNode("Skybox");
         skybox->SetPosition(camera_.GetPosition());
 
+        SceneNode* rain = scene_.GetNode("RainInstance");
+        rain->SetPosition(playerHead->GetPosition());
         
         if (animating_) {
             static double last_time = 0;
@@ -488,6 +490,8 @@ void Game::KeyCallback(GLFWwindow* window, int key, int scancode, int action, in
         if (pos.x > 9 && (pos.z > -188 || pos.z < -225))pos.x = 9;
         if (pos.z > 20)pos.z = 20;
         if (pos.z < -225)pos.z = -225;
+        pos.y = 5.0f;
+
         game->camera_.SetPosition(pos);
     }
     
