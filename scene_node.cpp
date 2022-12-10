@@ -254,8 +254,8 @@ void SceneNode::SetupShader(GLuint program){
     
     // THIS NUMBER NEEDS TO BE 3 * THE NUMBER OF LAMPS. IT'S REALLY REALLY IMPORTANT
     // WHEN YOU CHANGE THIS NUMBER, ALSO UPDATE EVERY SHADER AND INCREASE lampLightPos[n] TO n+1
-    float lampP[3];
-    for (int i = 0; i < 0; i++) {
+    float lampP[9];
+    for (int i = 0; i < 3; i++) {
         lampP[i*3] = lampLightPos.at(i).x;
         lampP[i*3+1] = lampLightPos.at(i).y;
         lampP[i*3+2] = lampLightPos.at(i).z;
@@ -289,7 +289,7 @@ void SceneNode::SetupShader(GLuint program){
     glUniformMatrix4fv(normal_mat, 1, GL_FALSE, glm::value_ptr(normal_matrix));
 
     // Texture
-    if (name_._Equal("Skybox")) {
+    if (name_ == "Skybox") {
         GLint skybox = glGetUniformLocation(program, "skybox");
         glUniform1i(skybox, 0); // Assign the first texture to the map
         glActiveTexture(GL_TEXTURE0);

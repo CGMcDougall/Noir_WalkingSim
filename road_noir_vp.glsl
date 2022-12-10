@@ -17,14 +17,14 @@ uniform mat4 normal_mat;
 // Uniform (global) buffer
 //uniform sampler2D texture_map;
 vec3 lightSources[5];
-uniform vec3 lampLightPos[1];
+uniform vec3 lampLightPos[3];
 
 
 // Attributes forwarded to the fragment shader
 out vec3 position_interp;
 out vec3 normal_interp;
 out vec2 vertex_uv;
-out vec3 lamp_light_interp[1];
+out vec3 lamp_light_interp[3];
 
 
 void main()

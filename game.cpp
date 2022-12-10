@@ -288,7 +288,7 @@ void Game::SetupScene(void){
     game::SceneNode* rainParticles = CreateInstance("RainInstance", "RainParticles", "RainMaterial");
 
     // Create skybox
-    game::SceneNode* skyBox = CreateInstance("Skybox", "Cube", "Skybox", "SpaceSkyBox");
+    game::SceneNode* skyBox = CreateInstance("SkyboxInstance", "Cube", "Skybox", "SpaceSkyBox");
 
     //game::SceneNode *Car = CreateInstance("Car1", "car", "Noir");
     //Car->SetScale(glm::vec3(0.2, 0.2, 0.2));
@@ -339,7 +339,7 @@ void Game::MainLoop(void){
         playerHead->SetPosition(camera_.GetPosition());
         playerHead->SetOrientation(camera_.GetOrientation());
 
-        SceneNode* skybox = scene_.GetNode("Skybox");
+        SceneNode* skybox = scene_.GetNode("SkyboxInstance");
         skybox->SetPosition(camera_.GetPosition());
 
         SceneNode* rain = scene_.GetNode("RainInstance");

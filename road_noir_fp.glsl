@@ -6,7 +6,7 @@
 in vec3 position_interp;
 in vec3 normal_interp;
 in vec2 vertex_uv;
-in vec3 lamp_light_interp[1];
+in vec3 lamp_light_interp[3];
 
 // Uniform (global) buffer
 uniform sampler2D texture_map;
